@@ -18,9 +18,10 @@ Clone the tool into a separate directory, or reuse an existing checkout.
 Read README.md and skills/delivery-board/SKILL.md. Check Node.js 22+ and npm,
 run npm ci, then npm run demo. Give me the local URL.
 
-If I supplied a project path, follow the Skill's bootstrap procedure to connect it.
-Preserve existing records and business code. Use available evidence; mark missing
-facts unknown and ask about material gaps. Validate the records and open the board.
+If I supplied a project path, follow the Skill's guided discovery procedure.
+Read first, then ask one or two questions at a time about goals, journeys and risks.
+Preserve existing records and business code; keep missing facts unknown. Show a
+draft route for me to confirm or adjust before creating and opening the baseline.
 Explain how to keep it updated and report any unfinished steps.
 ```
 

@@ -16,3 +16,16 @@ These are concrete scenarios reviewed against the written skill and adapter cont
 | New evidence ref names an unallowlisted document | Inspect it, update exact allowed configuration only within scope, restart and verify; no broad or traversal-based access. | Evidence procedure and restart requirement are explicit. |
 
 For a future independent agent run, supply an isolated fictional project with the stated inputs and record actual filesystem diffs, command results and graph outcomes. Keep observed results separate from this expectation table.
+
+## Guided discovery cases
+
+| Input | Expected behavior |
+| --- | --- |
+| Beginner with code but no clear product boundary | Read first, explain findings plainly, ask at most one or two material questions per round; build a resumable draft. |
+| User says “install it” then does not answer | Preserve formal records, label draft pending, never invent route confirmation. |
+| User confirms a route with an unresolved integration risk | Record the exact reviewed revision, confirmed scope and acknowledged risk; do not mark integration verified. |
+| Existing board and a request to explore a different scope | Keep the current baseline intact, propose changes separately, reconcile after agreement. |
+| A new session resumes an unfinished review | Read DISCOVERY.md and existing evidence; do not repeat answered questions or treat draft as formal. |
+| Draft changes after the user reviewed it | Check the review hash, reconcile changes and confirm material differences before promotion. |
+
+These are expected behaviors. The repository self-use exercise is recorded separately and does not substitute for novice-user testing.

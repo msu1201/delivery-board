@@ -54,7 +54,13 @@ export async function initProject(project = '.') {
   };
   const workflow = `# Delivery Board workflow
 
-This is an empty project board. Edit graph.json to describe your real work.
+This is an empty project board, not a confirmed project baseline.
+Ask your coding agent to read the packaged delivery-board Skill and follow its
+bootstrap procedure: inspect the project, discuss goals/journeys/risks, present a
+route draft, and record your confirmation before populating the formal graph.
+Keep DISCOVERY.md and optional draft.graph.json/draft.config.json separate until
+that review. Installation does not start an agent or enforce this confirmation.
+After the route is agreed, edit graph.json to describe your real work.
 Add nodes with unique IDs, a groupId, and dependsOn IDs; record acceptance criteria,
 verification, human decisions, and delivery evidence separately. Do not claim
 acceptance or delivery without evidence. Use the packaged examples as a schema guide.

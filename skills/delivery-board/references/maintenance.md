@@ -4,6 +4,8 @@ Use the resolved checkout's `docs/ADAPTER-CONTRACT.md` as the schema authority. 
 
 ## First population
 
+For the first baseline, complete bootstrap.md and record agreement on the concrete route before populating formal records. Keep unconfirmed route drafts separate. For subsequent authorized updates, reuse existing decisions within their scope; do not require a full onboarding interview again.
+
 Read approved project records before creating tasks. Map explicit work items to stable IDs, descriptive titles, kinds, groups, acceptance criteria, and exact references. A draft proposal may be referenced as a draft but is not an approved plan or acceptance decision. Use `unknown` for unsupported status; an approved future work item may be `planned`. Include only recorded prerequisite edges. If the source supplies no dependencies, do not manufacture a linear chain.
 
 Use milestone `children` only for established scope. Set `scopeUnknown` when scope is not established. A group's visual containment does not define milestone scope. Journey `itemIds` identify coverage and do not add dependencies. Narrative journeys retain unknown stage facts. Explicit journey stages must satisfy the contract and actual evidence; passing all associated tasks does not imply journey acceptance.

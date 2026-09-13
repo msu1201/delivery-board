@@ -1,6 +1,6 @@
 ---
 name: delivery-board
-description: Use when setting up the local Delivery Board viewer for a project or maintaining its saved delivery graph after approved plans, scope, dependencies, evidence, or acceptance records change.
+description: Guide users through an existing project, clarify goals, journeys and risks, confirm a first Delivery Board roadmap, or maintain its saved records as work changes.
 ---
 
 # Delivery Board
@@ -26,13 +26,17 @@ Use `open "$PROJECT_DIR" --no-open` to leave browser opening to the user. If the
 
 `init` creates only the project's `.delivery-board` sidecar files; it does not analyze code or turn a plan into a graph. Inspect existing sidecar files before initialization and preserve them. No automatic edits to business code or `AGENTS.md` are part of this workflow.
 
-## Populate deliberately
+## Guide the first baseline
 
-Read `docs/ADAPTER-CONTRACT.md` from the resolved tool checkout and inspect the initialized configuration to find its actual source paths. Identify the approved plan, specification, execution records, and acceptance decisions. For initial onboarding, read [references/bootstrap.md](references/bootstrap.md). If history or plans are incomplete, inventory the present project and propose a clearly labeled baseline; ask about material gaps rather than inventing a historical roadmap.
+Read [references/bootstrap.md](references/bootstrap.md) for first onboarding or when the user asks to rethink an existing project. It covers evidence inventory, a short guided conversation, a reviewable route draft, and confirmation before the first formal baseline. Use [references/discovery-template.md](references/discovery-template.md) to retain findings and decisions between sessions.
 
-Normalize only supported facts. Use stable IDs, explicit dependencies, actual acceptance criteria, and exact source references. List position, numbering, group membership, and journey membership do not establish execution order or dependencies. Uncertain status is `unknown`. Keep local verification, acceptance, and delivery separate; never invent human approval, milestone scope, evidence, a tested commit, or remote CI results. Read [references/maintenance.md](references/maintenance.md) when creating or revising the graph.
+Read project materials before asking questions. Explain choices in ordinary language; ask only one or two material questions at a time. Reuse answers and decisions already supplied. Cover goals, scope, user outcomes, failure recovery, acceptance and relevant technical risks.
 
-Run `check` after saving and inspect the displayed source freshness and relevant records. A successful structural check does not verify evidence truth.
+Keep observed facts, agreed plans, proposals and unknowns distinct. Keep the draft separate from existing formal records. The user confirms the concrete route before it becomes the baseline; asking to install or investigate is not that confirmation. A baseline may contain acknowledged unknowns. Planning approval never implies product acceptance.
+
+Read the tool's `docs/ADAPTER-CONTRACT.md` and inspect configured source paths before writing graph records. Use stable IDs, supported fields and exact references. List order or group/journey membership does not create dependencies. Missing status is `unknown`; verification, acceptance and delivery stay separate. Follow [references/maintenance.md](references/maintenance.md) when creating or revising records.
+
+Validate and inspect the displayed source freshness. Structural checks do not verify evidence truth. This Skill provides a workflow; the viewer does not enforce the route-confirmation step.
 
 ## Keep records current
 

@@ -24,6 +24,8 @@ For a ZIP download, choose **Code → Download ZIP**, extract it, then run `npm 
 
 ## Connect your project
 
+Before populating the first formal graph, follow the [guided review](DISCOVERY.md): read the project, discuss gaps and confirm a concrete route. Keep an optional draft separate until agreement.
+
 Run from the tool directory, replacing the example path:
 
 ```sh
