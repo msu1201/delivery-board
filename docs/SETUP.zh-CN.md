@@ -144,3 +144,6 @@ node tests/auto-refresh-browser.mjs
 4. 移除复制的 Skill。用过 `npm link` 的话，执行 `npm unlink -g delivery-board` 撤销链接。
 
 [MIT 许可证](../LICENSE) · [依赖声明](../THIRD-PARTY-NOTICES.md)。目前通过 GitHub 分发，没有 npm 包或在线演示站点。
+
+
+右上角可切换图模式与工作记录。列表显示每轮的问题、效果、起止时间和当时的前置／后续，点击关联任务可回到图中。没有保存的历史或时间会标为未记录；请 Agent 每轮维护 workLog。

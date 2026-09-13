@@ -175,6 +175,7 @@ export function adaptLedger(documents, config) {
       : {}),
     nodes,
     journeys: journeyRecords,
+    workLog: ledger.work_log,
     groups: config.groups.map(({ id, title }) => ({ id, title })),
     views: copy(config.views),
   });

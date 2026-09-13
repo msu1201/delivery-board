@@ -1,3 +1,4 @@
+import { renderWorkLog } from "./work-log.js";
 import { AutoRefresh } from "./auto-refresh.js";
 import { summarizeProgress, journeyProgress } from "/progress.js";
 import { installPanelResize } from "./resize-panel.js";
@@ -40,6 +41,26 @@ const canvas = new GraphCanvas($("cy"), {
   toggle: (id) => toggle(id),
   onZoom: (z) => ($("zoom-value").textContent = `${Math.round(z * 100)}%`),
 });
+let graphDrawn = false;
+let displayMode = "graph";
+try { displayMode = localStorage.getItem("delivery-board.view-mode") === "history" ? "history" : "graph"; } catch {}
+if (new URLSearchParams(location.search).get("view") === "history") displayMode = "history";
+function updateHistory() {
+  renderWorkLog($("work-history"), state.graph, id => { setMode("graph"); select(id); });
+}
+function setMode(mode) {
+  displayMode = mode;
+  document.body.classList.toggle("history-mode", mode === "history");
+  $("work-history").hidden = mode !== "history";
+  $("mode-graph").setAttribute("aria-pressed", mode === "graph");
+  $("mode-history").setAttribute("aria-pressed", mode === "history");
+  try { localStorage.setItem("delivery-board.view-mode", mode); } catch {}
+  if (mode === "history") updateHistory();
+  else if (state.graph) { canvas.cy.resize(); renderGraph(true); }
+}
+$("mode-graph").onclick = () => setMode("graph");
+$("mode-history").onclick = () => setMode("history");
+setMode(displayMode);
 async function fetchJSON(url) {
   const response = await fetch(url, {
     cache: "no-store",
@@ -74,6 +95,7 @@ const refresh = new RefreshController(
       return;
     }
     state.graph = snapshot.graph;
+    updateHistory();
     if (state.focus && !state.graph.nodes.some(n => n.id === state.focus)) {
       state.focus = null;
       $("clear-focus").hidden = true;
@@ -256,13 +278,15 @@ function renderNav() {
     state.expanded.size === state.graph.groups.length ? "折叠全部" : "展开全部";
 }
 function renderGraph(preserve = true) {
+  if (displayMode === "history") return;
   document.body.classList.toggle("has-detail", !!(state.selected || state.journey));
   const p = canvas.draw(state.graph, state.view, state.expanded, {
-    preserve,
+    preserve: preserve && graphDrawn,
     selected: state.selected,
     focus: state.focus,
     journeyId: state.journey,
   });
+  graphDrawn = true;
   const v = state.graph.views.find((v) => v.id === state.view);
   const journey = state.graph.journeys?.find((j) => j.id === state.journey);
   $("view-title").textContent = journey

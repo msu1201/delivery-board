@@ -239,3 +239,21 @@ The source owner resolves a waived blocker explicitly with `state: "resolved"` a
 - A missing summary shows unrecorded. Failed refresh keeps the last summary with the stale indicator.
 - Summaries explain the source state; they do not change verification, acceptance or delivery.
 - New evidence references require an inspected `evidenceAllowlist` update and a verified viewer restart to load the new configuration.
+## Work history (optional)
+
+A normalized graph may contain `workLog` (up to 1,000 entries). The ledger adapter maps top-level `work_log` to it, preserving the entry field names below. Old graphs without history remain valid.
+
+| Field | Meaning |
+| --- | --- |
+| `id` | Stable, unique record ID using the node ID syntax |
+| `title`, `summary`, `result` | Round title, problem addressed and observed effect; title must be nonempty. Empty summary/result display unrecorded. |
+| `status` | `in_progress`, `completed`, `blocked`, or `unknown`; a round's status is separate from task acceptance/delivery |
+| `startedAt`, `endedAt` | ISO 8601 timestamps with timezone (seconds, optional 1–3 fractional digits), or null/omitted for unrecorded times |
+| `taskIds` | Array of task IDs worked on |
+| `previousTaskIds`, `nextTaskIds` | Arrays of prerequisite/follow-up task IDs recorded at the time |
+
+Each ID array has at most 500 unique IDs. Historical IDs may refer to tasks no longer in the graph. They remain visible but cannot be opened. Relations describe the recorded round; they do not create graph edges or track later changes automatically.
+
+End time cannot precede start time. An `in_progress` round cannot have an end time. Missing times stay unrecorded; completion does not fabricate a duration. Lists sort by known start time descending, with unknown starts last in source order.
+
+History is agent-maintained source data, not telemetry or an inferred Git log. Keep old rounds and their relationships; correct an erroneous record explicitly in the source workflow. The viewer does not enforce append-only storage. Malformed history rejects the snapshot and preserves the last valid graph with a stale warning.

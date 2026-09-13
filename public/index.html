@@ -21,6 +21,7 @@
         <h1 id="project-name">正在读取项目…</h1>
         <span id="version">来源版本未知</span>
       </div>
+      <div class="mode-switch" role="group" aria-label="查看方式"><button id="mode-graph" aria-pressed="true">图模式</button><button id="mode-history" aria-pressed="false">工作记录</button></div>
       <label class="auto-refresh-control"><input id="auto-refresh" type="checkbox" checked /> 自动刷新 · 5秒</label>
       <button id="refresh" class="primary">↻ 刷新记录</button>
     </header>
@@ -32,6 +33,7 @@
       <p id="current-position"></p><p id="current-checkpoint" hidden></p><details id="current-more"><summary>任务关系详情</summary><div id="current-context"></div></details>
     </section>
     <div id="ci-policy" hidden></div>
+    <section id="work-history" hidden aria-labelledby="history-title"></section>
     <main>
       <nav class="sidebar" aria-label="视图与分组">
         <span class="eyebrow">工作范围</span>

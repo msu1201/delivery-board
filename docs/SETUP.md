@@ -144,3 +144,6 @@ Browser checks need Chrome; set `CHROME_PATH` if needed. This preview has been v
 4. Remove any copied Skill. If you used `npm link`, undo it with `npm unlink -g delivery-board`.
 
 [MIT license](../LICENSE) · [Dependency notices](../THIRD-PARTY-NOTICES.md). Distribution is through GitHub; there is no npm package or hosted demo.
+
+
+Use the top-right Graph / Work records control to switch between dependencies and saved work history. Task links return to the graph. Missing history or timestamps stay explicitly unrecorded; ask your agent to maintain workLog each round.

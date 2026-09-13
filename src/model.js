@@ -156,6 +156,34 @@ export function validateJourneys(journeys, ids) {
     }
   }
 }
+export function validateWorkLog(entries) {
+  if (entries === undefined) return;
+  if (!Array.isArray(entries) || entries.length > 1000) fail("Invalid workLog (0–1000 records)");
+  const ids = new Set();
+  const timestamp = (value) => {
+    if (value == null) return null;
+    if (typeof value !== "string") fail("Invalid workLog time");
+    const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d{1,3})?(Z|[+-]\d{2}:\d{2})$/.exec(value);
+    if (!match || !Number.isFinite(Date.parse(value))) fail("Invalid workLog time; include timezone");
+    const [,year,month,day,hour,minute,second] = match.map((x,i)=>i>0&&i<7?Number(x):x);
+    if (month<1 || month>12 || day<1 || day>new Date(Date.UTC(year,month,0)).getUTCDate() || hour>23 || minute>59 || second>59) fail("Invalid workLog calendar time");
+    return Date.parse(value);
+  };
+  for (const e of entries) {
+    record(e, "workLog entry");
+    if (typeof e.id !== "string" || !ID.test(e.id) || ids.has(e.id)) fail("Invalid/duplicate workLog ID");
+    ids.add(e.id);
+    for (const key of ["title", "summary", "result"]) text(e[key], `workLog ${key} required`);
+    if (!e.title.trim()) fail("workLog title must not be empty");
+    if (!["in_progress","completed","blocked","unknown"].includes(e.status)) fail("Invalid workLog status");
+    const start=timestamp(e.startedAt), end=timestamp(e.endedAt);
+    if (start!==null && end!==null && end<start) fail("workLog end precedes start");
+    if (e.status==="in_progress" && end!==null) fail("Active workLog cannot have an end time");
+    for (const key of ["taskIds","previousTaskIds","nextTaskIds"]) {
+      if (!Array.isArray(e[key]) || e[key].length>500 || new Set(e[key]).size!==e[key].length || e[key].some(id=>typeof id!=="string" || !ID.test(id))) fail(`Invalid workLog ${key}`);
+    }
+  }
+}
 export function validateGraph(g) {
   if (
     g?.schemaVersion !== 1 ||
@@ -189,6 +217,7 @@ export function validateGraph(g) {
   unique(g.views, "view");
   validateJourneys(g.journeys, ids);
   validateCIPolicy(g.ciPolicy);
+  validateWorkLog(g.workLog);
   for (const a of g.groups) text(a.title, "Group title required");
   for (const n of g.nodes) {
     optionalDetails(n);

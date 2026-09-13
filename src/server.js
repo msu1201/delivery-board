@@ -4,6 +4,7 @@ import { randomBytes } from "node:crypto";
 const staticFiles = new Map([
   ["/", ["../public/index.html", "text/html"]],
   ["/auto-refresh.js", ["../public/auto-refresh.js", "text/javascript"]],
+  ["/work-log.js", ["../public/work-log.js", "text/javascript"]],
   ["/app.js", ["../public/app.js", "text/javascript"]],
   ["/routing.js", ["../public/routing.js", "text/javascript"]],
   ["/resize-panel.js", ["../public/resize-panel.js", "text/javascript"]],

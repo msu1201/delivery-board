@@ -29,6 +29,7 @@ skills/delivery-board/SKILL.md。检查 Node.js 22+ 和 npm，运行 npm ci
 - 🔵 当前任务，以及依赖它的后续工作。
 - 🟩 已完成、部分完成、待验收和受阻的任务。
 - 🧭 当前工作在路线图中的位置，可展开分组、筛选闭环。
+- 🕒 工作记录：每轮解决的问题、结果、起止时间和任务关系。
 - ↻ 项目记录更新后，任务和连线也会更新。
 
 ![虚构旅行项目 Wayfarer 的中文看板](launch/assets/demo-overview-zh-CN.png)

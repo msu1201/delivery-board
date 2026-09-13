@@ -270,3 +270,11 @@ test("explicit delivered verification stays verified without inferring it from a
     assert.equal(node.delivery.status, "delivered");
   }
 });
+
+test('ledger work_log preserves historical relationships and rejects invalid intervals',()=>{
+ const log={id:'round',title:'Review',summary:'Check scope',result:'Recorded',status:'completed',startedAt:null,endedAt:null,taskIds:['OLD'],previousTaskIds:[],nextTaskIds:[]};
+ const docs=documents([item('A')]);const ledger=JSON.parse(docs.ledger);ledger.work_log=[log];docs.ledger=JSON.stringify(ledger);
+ assert.deepEqual(adapt(docs,configuration(['A'])).workLog,[log]);
+ ledger.work_log[0].startedAt='invalid';docs.ledger=JSON.stringify(ledger);
+ assert.throws(()=>adapt(docs,configuration(['A'])));
+});

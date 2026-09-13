@@ -30,6 +30,7 @@ Explain how to keep it updated and report any unfinished steps.
 - 🔵 Current work and the tasks that depend on it.
 - 🟩 Completed tasks, with separate colors for partial, waiting and blocked work.
 - 🧭 Your place in the roadmap, with expandable groups and journey filters.
+- 🕒 Work records with each round’s purpose, result, times and task relationships.
 - ↻ Updated tasks and connections when saved project records change.
 
 ![English presentation of the fictional Wayfarer demo](launch/assets/demo-overview-en.png)

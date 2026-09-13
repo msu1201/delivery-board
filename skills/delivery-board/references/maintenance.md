@@ -29,3 +29,11 @@ Review the affected records together before saving:
 Use the project's checker when one exists, then the public `check` command. Inspect the final diff for unrelated edits and dangling references. Save coordinated record changes promptly; the snapshot reader's consistency checks cannot prove that a writer finished a multi-file update. An invalid intermediate record must remain visibly stale rather than appear current.
 
 Open or refresh the board, confirm a successful source capture and the affected structure. If automatic refresh is paused or the page hidden, resume/return and verify a new successful read. On a failed read, retain the prior valid data and investigate the visible error; never describe that data as current. Report what was updated, what evidence supports the state, and any outstanding source gap.
+
+## Record each work round
+
+Maintain `workLog` in normalized sources (`work_log` at the ledger top level); read the adapter contract for fields and limits. Create a stable entry when authorized work starts and update that same entry when it ends. Read an actual clock for timestamps. For retrospective records, leave unavailable start/end times null rather than guessing from commit, refresh or file modification times.
+
+Write a concise title, the problem addressed (`summary`), observed result, round status and affected task IDs. Preserve the prerequisites and follow-ups as they were recorded for this round, not as today's graph would derive them. Keep historical references when tasks are later deleted. Completing a round does not mark its tasks accepted or delivered.
+
+Preserve older entries. Append a new entry for the next round; do not generate entries on every browser refresh. Explain corrections to previous records in the project's evidence workflow. Validate and inspect the Work records view as part of a handoff. An empty history is a missing record, not evidence that no work happened.

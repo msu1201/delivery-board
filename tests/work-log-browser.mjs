@@ -1,0 +1,38 @@
+import {chromium} from 'playwright';
+import {mkdtemp,writeFile,rm} from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {Source,loadConfig} from '../src/source.js';
+import {startServer} from '../src/server.js';
+const root=await mkdtemp(path.join(os.tmpdir(),'board-history-'));
+const graph={schemaVersion:1,project:{name:'History test'},groups:[{id:'g',title:'Group'}],views:[{id:'all',title:'All',mode:'all'}],nodes:[{id:'A',title:'Task A',kind:'technical',status:'in_progress',groupId:'g',dependsOn:[],acceptance:[],evidence:[]}]};
+await writeFile(path.join(root,'graph.json'),JSON.stringify(graph));
+await writeFile(path.join(root,'config.json'),JSON.stringify({root:'.',adapter:'normalized',sources:{graph:'graph.json'},git:false}));
+const server=await startServer(new Source(await loadConfig(path.join(root,'config.json'))),0);
+const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});
+try{
+ const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto(server.url);await page.locator('#minimap svg').waitFor();
+ await page.locator('#mode-history').click();assert.match(await page.locator('#work-history').innerText(),/还没有保存/);
+ const entry={id:'round-1',title:'<img src=x onerror=alert(1)>',summary:'Restore saved work',result:'Draft recovered',status:'completed',startedAt:null,endedAt:null,taskIds:['A'],previousTaskIds:['REMOVED'],nextTaskIds:[]};
+ graph.workLog=[entry,{...entry,id:'round-2',title:'Latest round',startedAt:'2026-09-13T01:00:00Z',endedAt:'2026-09-13T02:00:00Z'}];
+ await writeFile(path.join(root,'graph.json'),JSON.stringify(graph));
+ await page.waitForFunction(()=>document.querySelectorAll('.history-card').length===2,{},{timeout:15000});
+ assert.equal(await page.locator('.history-card h3').first().innerText(),'Latest round');
+ assert.equal(await page.locator('#work-history img').count(),0);
+ assert.match(await page.locator('#work-history').innerText(),/REMOVED（当前图中不存在）/);
+ assert.match(await page.locator('#work-history').innerText(),/结束时间未记录/);
+ await page.reload();await page.locator('.history-card').first().waitFor();assert.equal(await page.locator('#mode-history').getAttribute('aria-pressed'),'true');
+ await page.locator('.history-links button').first().click();assert.equal(await page.locator('#mode-graph').getAttribute('aria-pressed'),'true');assert.match(await page.locator('#detail').innerText(),/Task A/);
+ await page.locator('#mode-history').click();
+ graph.workLog[0].endedAt='invalid';await writeFile(path.join(root,'graph.json'),JSON.stringify(graph));
+ await page.waitForFunction(()=>document.getElementById('alert').classList.contains('error'),{},{timeout:15000});assert.equal(await page.locator('.history-card').count(),2);
+ delete graph.workLog;await writeFile(path.join(root,'graph.json'),JSON.stringify(graph));
+ await page.waitForFunction(()=>!document.getElementById('alert').classList.contains('error')&&document.querySelector('.history-empty'),{},{timeout:15000});
+ await page.setViewportSize({width:390,height:844});assert.equal(await page.locator('#mode-history').isVisible(),true);
+ const brand=await page.locator('.brand').boundingBox(),toggle=await page.locator('.mode-switch').boundingBox();
+ assert.ok(toggle.y>=brand.y+brand.height || toggle.x>=brand.x+brand.width,'mobile brand and toggle must not overlap');
+ assert.deepEqual(errors,[]);
+ console.log('History browser passed: empty, refresh, sorting, escaped text, removed IDs, persistence, graph navigation, stale recovery and mobile control.');
+}finally{await browser.close();await server.close();await rm(root,{recursive:true,force:true});}
