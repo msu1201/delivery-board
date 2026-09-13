@@ -15,13 +15,13 @@
     },
     {
       "path": "README.md",
-      "sha256": "90ba08d9639284960131575f00e86cffac992507287f40077374d9d5149bab1c",
-      "bytes": 10596
+      "sha256": "9c8f73c80194f9d9c1f4b19c78e14f66308126a41ab76d6ee0fb9eb8413a7852",
+      "bytes": 4724
     },
     {
       "path": "README.zh-CN.md",
-      "sha256": "e57b26fb2c6318e12912857120558a7e9c54b7085da4658879aac9f9ac3fd61f",
-      "bytes": 8323
+      "sha256": "377debff317394722603aec1aec1ca33ba719d15783096829d2f3d9b48bc1547",
+      "bytes": 4434
     },
     {
       "path": "THIRD-PARTY-NOTICES.md",
@@ -100,8 +100,8 @@
     },
     {
       "path": "launch/VERIFICATION.md",
-      "sha256": "900c8d5c1ec119f063d9c6c47ce95d8ffda793750d23435fe922acbe81fb33e2",
-      "bytes": 1625
+      "sha256": "ed1c2b3c84773fe9a75f5d4e5dcd04aaf6b437969f34659cb3b8778749faf497",
+      "bytes": 2080
     },
     {
       "path": "launch/assets/demo-current.png",
@@ -235,8 +235,8 @@
     },
     {
       "path": "scripts/export-release.mjs",
-      "sha256": "032c45e22db289507fadb44cc1753dfe5bf54c197b9ad070ba0949dd859953d4",
-      "bytes": 2342
+      "sha256": "035fd217a1c6bfae0a2f0dcffdabe78b0646081a57887d912423e2f692ac3770",
+      "bytes": 2409
     },
     {
       "path": "skills/delivery-board/SKILL.md",
@@ -412,6 +412,31 @@
       "path": "tests/source.test.js",
       "sha256": "f9873610995a9314c62765d3f2b3bec6ae046cf087d09a686bc222eaac14a3c1",
       "bytes": 8727
+    },
+    {
+      "path": "docs/SETUP.md",
+      "sha256": "d39241b431eaa06bd9c0f4ed8e1f1b0d0b78c8100caf290fcd40361090ae6f44",
+      "bytes": 8063
+    },
+    {
+      "path": "docs/SETUP.zh-CN.md",
+      "sha256": "a3a8147fc7d0736b2048446d36777504bfd98f02e098c48ea0ff115682992c55",
+      "bytes": 6251
+    },
+    {
+      "path": "scripts/capture-readme.mjs",
+      "sha256": "767eed27feef4c42ef11af4cd1040e4a5762440cc7b6375297bfe508b46831fd",
+      "bytes": 10384
+    },
+    {
+      "path": "launch/assets/demo-overview-en.png",
+      "sha256": "9c75695bb74bf691639104eee177668a696b3b4ffb3fc9008fd8773eef3dffbf",
+      "bytes": 158097
+    },
+    {
+      "path": "launch/assets/demo-overview-zh-CN.png",
+      "sha256": "63c7df710f5e6bbca46c14e5773201dabe0088e9d8e4643a19099a1543dc62a7",
+      "bytes": 189719
     }
   ]
 }

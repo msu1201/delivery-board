@@ -7,7 +7,7 @@ const root=await realpath(fileURLToPath(new URL('../',import.meta.url)));
 const requested=process.argv[2] && path.resolve(process.argv[2]);
 const dest=requested && path.join(await realpath(path.dirname(requested)),path.basename(requested));
 if(!dest || dest===root || dest.startsWith(root+path.sep)) throw Error('Provide a new export directory outside the working repository');
-const allowed=['src','public','examples/synthetic','examples/travel-demo','skills/delivery-board','tests','launch','package.json','package-lock.json','README.md','README.zh-CN.md','LICENSE','THIRD-PARTY-NOTICES.md','.gitignore','docs/ADAPTER-CONTRACT.md','docs/WORKFLOW.md','docs/WORKFLOW-TEMPLATE.md','docs/DEPENDENCIES.md','docs/LAUNCHER.md','scripts/evolve-demo.js','scripts/export-release.mjs','scripts/capture-demo.mjs'];
+const allowed=['src','public','examples/synthetic','examples/travel-demo','skills/delivery-board','tests','launch','package.json','package-lock.json','README.md','README.zh-CN.md','LICENSE','THIRD-PARTY-NOTICES.md','.gitignore','docs/ADAPTER-CONTRACT.md','docs/WORKFLOW.md','docs/WORKFLOW-TEMPLATE.md','docs/DEPENDENCIES.md','docs/LAUNCHER.md','scripts/evolve-demo.js','scripts/export-release.mjs','scripts/capture-demo.mjs','scripts/capture-readme.mjs','docs/SETUP.md','docs/SETUP.zh-CN.md'];
 const files=[];
 async function inspect(relative){
  const from=path.join(root,relative),s=await lstat(from);

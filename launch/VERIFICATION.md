@@ -9,3 +9,7 @@
 - Public export excludes original Git history, local configuration, runtime state, private screenshots and internal planning/verification documents. Export validates an explicit file inventory and refuses symlinks and nested repository destinations.
 
 Verified environment: macOS, Node.js 25 (declared minimum 22), installed Chrome. Node 22 itself and other operating systems still need separate compatibility runs. Viewer startup needs write access to its tool directory for local runtime state. No npm registry publication or hosted demo is claimed.
+
+## README images
+
+`node scripts/capture-readme.mjs` captures an English presentation of the fictional demo. `--zh-CN` captures its Chinese counterpart. Both use a temporary demo copy and the real graph renderer. The English capture translates browser responses for this image only; it does not add an application language setting. It checks visible DOM text and canvas labels for untranslated Chinese. Status, dependency and progress data are unchanged.
