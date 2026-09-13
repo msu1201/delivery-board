@@ -7,6 +7,8 @@ description: Use when setting up the local Delivery Board viewer for a project o
 
 The board is a local, read-only view of saved project records. This skill prepares and maintains those records; the viewer does not interpret conversations, infer implementation progress, or approve work.
 
+The user may ask an Agent to read this file directly from the checkout; copying it to a skill directory is optional and useful for repeated discovery. This instruction file does not install the application.
+
 ## Locate and open
 
 Resolve two absolute paths: `DELIVERY_BOARD_DIR`, the downloaded tool directory containing `package.json`, `src/entry.js`, and `docs/ADAPTER-CONTRACT.md`; and `PROJECT_DIR`, the user's chosen project. Use a supplied path or inspect the current workspace. If the skill has been copied to a skill directory, its parent is not necessarily the tool checkout. Ask for the missing path if it cannot be established. Never embed a developer's machine path. Read the tool's README for current runtime and dependency setup.
@@ -26,7 +28,7 @@ Use `open "$PROJECT_DIR" --no-open` to leave browser opening to the user. If the
 
 ## Populate deliberately
 
-Read `docs/ADAPTER-CONTRACT.md` from the resolved tool checkout and inspect the initialized configuration to find its actual source paths. Identify the approved plan, specification, execution records, and acceptance decisions. If no approved plan exists, retain the starter/unknown state and explain what is missing.
+Read `docs/ADAPTER-CONTRACT.md` from the resolved tool checkout and inspect the initialized configuration to find its actual source paths. Identify the approved plan, specification, execution records, and acceptance decisions. For initial onboarding, read [references/bootstrap.md](references/bootstrap.md). If history or plans are incomplete, inventory the present project and propose a clearly labeled baseline; ask about material gaps rather than inventing a historical roadmap.
 
 Normalize only supported facts. Use stable IDs, explicit dependencies, actual acceptance criteria, and exact source references. List position, numbering, group membership, and journey membership do not establish execution order or dependencies. Uncertain status is `unknown`. Keep local verification, acceptance, and delivery separate; never invent human approval, milestone scope, evidence, a tested commit, or remote CI results. Read [references/maintenance.md](references/maintenance.md) when creating or revising the graph.
 
