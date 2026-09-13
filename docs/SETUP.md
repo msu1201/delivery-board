@@ -1,10 +1,12 @@
 # Setup guide
 
-[Back to README](../README.md)
+[Documentation](README.md) · [中文说明](SETUP.zh-CN.md)
+
+Want your agent to handle setup? Use the [README prompt](../README.md#try-it-with-your-agent). The steps below are for manual setup.
 
 ## Try it
 
-Requires Node.js 22+ and npm. For a Git checkout:
+Requires Node.js 22+ and npm. Run:
 
 ```sh
 git clone https://github.com/msu1201/delivery-board.git
@@ -13,82 +15,115 @@ npm ci
 npm run demo
 ```
 
-Alternatively, use **Code → Download ZIP**, extract it, open a terminal in the extracted directory, then run `npm ci` and `npm run demo`. Clone and ZIP provide the same application; choose either one.
+For a ZIP download, choose **Code → Download ZIP**, extract it, then run `npm ci` and `npm run demo` in that folder.
 
-The browser opens automatically. The terminal prints the actual local URL and viewer PID. A busy port is left untouched; the viewer chooses another available port. No background service is installed. Repeat the command to reopen/reuse the viewer. `--no-open` prints the URL without opening a browser.
+- The browser opens automatically; the terminal prints the URL and viewer PID.
+- Busy ports are left alone. Repeat the command to reuse the viewer.
+- Use `--no-open` to print the URL without opening a browser.
+- The viewer is a detached process, not an installed system service.
 
 ## Connect your project
 
-From the downloaded board directory (replace the example path):
+Run from the tool directory, replacing the example path:
 
 ```sh
 npm run init -- "/path/to/your-project"
-npm run open -- "/path/to/your-project"
 ```
 
-This creates only `.delivery-board/config.json`, `graph.json`, and `WORKFLOW.md` inside that project. Existing setup is never overwritten. The initial graph is intentionally empty: `init` does not scan your code or invent a roadmap.
+This creates three files inside your project's `.delivery-board` directory:
 
-Populate that graph from your agreed task records using the [schema and examples](../docs/ADAPTER-CONTRACT.md), or use the [Agent prompt in the README](../README.md#try-it-with-your-agent). `init` creates the container; the Agent following the Skill organizes your project into records. Review uncertain statuses and dependencies. Then validate:
+| File | Purpose |
+| --- | --- |
+| `config.json` | Source and access settings |
+| `graph.json` | Empty task graph |
+| `WORKFLOW.md` | Record maintenance instructions |
+
+Existing setup is preserved. `init` does not scan code; ask your agent to follow the [Skill](../skills/delivery-board/SKILL.md), or fill the graph using the [data format](ADAPTER-CONTRACT.md).
+
+Review uncertain statuses and dependencies, then validate and open:
 
 ```sh
 node src/entry.js check "/path/to/your-project"
+npm run open -- "/path/to/your-project"
 ```
 
-For a shorter optional command, run `npm link` once in the downloaded board directory. Then `delivery-board open "/path/to/your-project"` works from other directories. This is a local link, not an npm-registry installation.
+Optional: run `npm link` in the tool directory to use `delivery-board open "/path/to/your-project"` from elsewhere. This creates a local command link.
 
-## How an existing project becomes a board
+## Review an existing project
 
-| Part | Responsibility |
+| Available information | How the agent uses it |
 | --- | --- |
-| Application | Read configured records, validate and render them; optionally read local Git metadata. No active remote GitHub/CI queries. |
-| `init` command | Create an empty `.delivery-board` setup without overwriting an existing one. |
-| Agent + Skill instructions | Inventory relevant project evidence, draft tasks/groups/dependencies/journeys, reconcile uncertainties and maintain saved records as work evolves. |
+| Roadmap, specifications, tasks and handoffs | Draft tasks, groups and scope |
+| Local Git history | Establish what changed and when |
+| Relevant, authorized issues, PRs and CI | Add supporting records |
+| Code and tests, but incomplete history | Inventory current capabilities and propose today's baseline |
 
-For a well-documented project, the Agent starts from the agreed roadmap, specifications, task records, handoffs and acceptance evidence. Local Git history can establish what changed and when. Relevant authorized issues, PRs and CI can supply additional evidence. A recorded CI result may be displayed by the viewer; this is different from the viewer querying GitHub itself.
+Ask about missing goals or priorities. Mark proposed phases as proposals and uncertain status as `unknown`. Record unresolved questions in setup notes and task records, then update them as facts become available.
 
-With incomplete history, start from **today's baseline**, not a fabricated reconstruction. The Agent inspects the current capabilities, entry points and available tests, then asks about the intended outcome and current priority where necessary. Existing code supports “implementation found,” not “accepted” or “delivered.” Tests support only their actual tested scope. Missing status remains `unknown`; a suggested phase/module structure is identified as a proposal, and dependency arrows require evidence or an explicit planning decision. Groups are not automatically chronological phases.
+Code shows an implementation exists; tests support only their tested scope. Neither proves human acceptance. Dependency arrows need evidence or an explicit planning decision. Groups do not automatically define chronological phases.
 
-The initial board may therefore be partial but useful. Unresolved questions belong in the setup notes and relevant task records. When the user clarifies a fact, update the baseline. Do not show guessed completion percentages or pretend that every historical task has been recovered. See the [bootstrap procedure](../skills/delivery-board/references/bootstrap.md).
+The first graph can be partial. Avoid guessed percentages or claims that all past tasks were recovered. See the [bootstrap procedure](../skills/delivery-board/references/bootstrap.md).
 
 ## Keep it current
 
-Agreed plan changes → update authoritative records → validate → the visible board refreshes automatically, five seconds after the previous read completes. Pause using the checkbox; manual Refresh is always available. Hidden tabs pause polling. Unchanged sources do not redraw the graph. Zoom, selection and exploration are retained on updates where the selected items still exist.
+Agree on the change, update the source records and adapter mappings, then validate. The board displays the latest successfully read records.
 
-Try the fictional plan change while its board is open:
+| Refresh behavior | What to expect |
+| --- | --- |
+| Visible page | Reads again five seconds after the previous read finishes |
+| Hidden page | Pauses polling |
+| Unchanged records | Keeps the existing graph |
+| Changed records | Retains zoom and selections where the selected items still exist |
+| Failed read | Keeps the last valid graph with a stale warning |
+
+You can pause automatic refresh or click Refresh manually. Chat alone does not update records; the Skill is a workflow for your agent, not a continuously running agent.
+
+### Try a plan change
+
+With the fictional demo open, run:
 
 ```sh
 node scripts/evolve-demo.js examples/travel-demo
-# Restore the original fictional state:
+```
+
+A recovery task appears, dependencies change and current work moves. These changes come from saved demo records. The script refuses non-demo projects and custom-edited demo states.
+
+Restore the demo:
+
+```sh
 node scripts/evolve-demo.js examples/travel-demo --reset
 ```
 
-This adds a recovery task, changes dependencies and moves current work. It is an actual saved-record update, not a prerecorded UI animation. The script refuses non-demo projects and custom-modified demo states.
-
-**The board reflects the latest successfully read records, not everything said in chat.** The companion skill maintains those records as plans change; it is not a continuously running agent. Explicit adapter mappings must also be maintained. Failed reads retain the last valid graph with a visible stale warning.
-
 ## Read the graph
 
-Blue: active. Green: complete. Purple: partial. Orange: awaiting acceptance. Red: blocked. White: pending. Gray: unknown. Selection has a dark double border. Group X/Y counts completed member tasks, not ordinal execution steps or overall delivery.
+🔵 Active · 🟢 Complete · 🟣 Partial · 🟠 Awaiting acceptance · 🔴 Blocked · ⚪ Pending · ◻ Unknown
 
-Technical/documentation verification can complete those task kinds. Product verification alone does not imply acceptance. Journey verification, acceptance and delivery remain separate from linked task counts. Scope without explicit records remains unknown.
+- A dark double border marks selection. **4/7 means four completed member tasks out of seven**, not the fourth step or overall delivery.
+- Technical/documentation tasks can complete through verification. Product tasks require acceptance.
+- Journey verification, acceptance and delivery have separate records. Linked task counts cannot replace them; unrecorded scope stays unknown.
+- Use the minimap, Locate current, group expansion and journey filters to navigate. Drag the details divider to widen the panel. Fit graph shows the full overview.
 
-Use the minimap and **Locate current**, expand groups, filter a journey, or drag the detail panel divider. Full overview is available without making tiny labels the default.
+## Use the Skill
 
-## Local by default
+The application runs the board. The Skill tells an agent how to prepare and maintain its records.
 
-The viewer binds to loopback, reads only configured files and explicitly allowlisted evidence, and exposes no source-writing route. There are no model calls or telemetry in rendering/refresh. Git metadata and remote CI records are not proof of business completion. Installing dependencies requires network access; ordinary local viewing does not.
+| Use | Setup |
+| --- | --- |
+| First session | Ask the agent to read `skills/delivery-board/SKILL.md` in the checkout. No installation needed. |
+| Repeated use | Optionally copy the whole `skills/delivery-board` folder to its supported skill directory. Tell it where the application lives. Discovery depends on the agent's settings. |
+| Agent without Skill support | Keep referencing the file directly. |
 
-`init` writes setup files only; the optional demo-evolution script writes only fictional demo records. Decide whether to commit your `.delivery-board` records according to your project's privacy policy; they are not automatically Git-ignored.
+Copying the Skill does not install the application or dependencies. It also does not start a background process or guarantee record maintenance in future sessions.
 
-## Why a Skill, and is installation necessary?
+## Local files and privacy
 
-The application is executable code; the Skill is an instruction file for your Agent. It explains how to turn project evidence into this graph format, keep dependencies consistent and separate verification from acceptance. Copying instructions does not install the application or its dependencies, which is why you still need the tool checkout or ZIP.
+- The viewer binds to loopback and reads configured files and allowlisted evidence. It has no source-writing route, model calls or telemetry.
+- Git facts and recorded CI results do not prove business completion. The viewer does not query remote CI.
+- Installation needs network access; ordinary viewing does not.
+- `init` writes setup files; the evolution script writes fictional demo records only.
+- Decide whether to commit `.delivery-board` records. They are not automatically Git-ignored.
 
-**For a first try, no Skill installation is required.** The README prompt asks the Agent to read `skills/delivery-board/SKILL.md` directly from the checkout. That is enough for the current setup session.
-
-For repeated use, optionally copy the whole `skills/delivery-board` folder to your Agent's supported skill location. This makes the workflow reusable without repeatedly supplying the file path, subject to that Agent's discovery settings. Tell the Agent where the application checkout lives. Installation is optional, does not create a background process, and does not guarantee automatic record maintenance in unrelated sessions. If your Agent has no Skill mechanism, continue referencing the file directly.
-
-## Development and removal
+## Test the installation
 
 ```sh
 npm test
@@ -97,8 +132,13 @@ node tests/evolution-browser.mjs
 node tests/auto-refresh-browser.mjs
 ```
 
-Browser checks require Chrome; set `CHROME_PATH` for its location. macOS is the verified desktop environment for this preview. Windows/Linux behavior needs independent acceptance before being advertised as tested.
+Browser checks need Chrome; set `CHROME_PATH` if needed. This preview has been verified on macOS. Windows and Linux still need validation.
 
-To stop a detached viewer, use the PID printed by its launch in your system's process tools. Remove the downloaded tool directory after stopping it; remove only its `.delivery-board` directory if you also want to delete your saved board records. Undo an optional global link with `npm unlink -g delivery-board`. Remove the copied skill separately.
+## Stop or remove it
 
-MIT licensed. See [dependency notices](../THIRD-PARTY-NOTICES.md). This preview is prepared for GitHub distribution; no npm registry package or public demo URL is assumed.
+1. Verify the launch PID still belongs to your viewer, then stop it using your system's process tools. See [launcher recovery](LAUNCHER.md).
+2. Delete the tool directory to remove the application.
+3. Keep or delete your project's `.delivery-board` records separately.
+4. Remove any copied Skill. If you used `npm link`, undo it with `npm unlink -g delivery-board`.
+
+[MIT license](../LICENSE) · [Dependency notices](../THIRD-PARTY-NOTICES.md). Distribution is through GitHub; there is no npm package or hosted demo.

@@ -30,28 +30,28 @@
     },
     {
       "path": "docs/ADAPTER-CONTRACT.md",
-      "sha256": "ded7b31a466afc3a3021cbbcac27c558b4d6ea59aab9ea00e42bb1762a276a24",
-      "bytes": 12465
+      "sha256": "3aa706e0b5b2fb6bbae8967b65c086afe20c28b569f04cb226eec50a9472b6b2",
+      "bytes": 11895
     },
     {
       "path": "docs/DEPENDENCIES.md",
-      "sha256": "eec475d41e477f3035f66a41b7b0d9681f0ee2d7a65104e0ab84afda32791cf8",
-      "bytes": 755
+      "sha256": "c45d9fef8fba98341bd449febbd8da4424e8f820035e7abf3fbf429ce7b0119b",
+      "bytes": 994
     },
     {
       "path": "docs/LAUNCHER.md",
-      "sha256": "4e3c3829461ff84fd2c61bb489d17e4a2978f8075bae11949108217d2f7c8182",
-      "bytes": 3975
+      "sha256": "6725340cf59dd2cd32500ac0dc2b7ef54ba410d960e7b9c283c5bea6bea1c508",
+      "bytes": 3930
     },
     {
       "path": "docs/WORKFLOW-TEMPLATE.md",
-      "sha256": "bb68cc074c4fb6cb7de5a2410d0fc7a7f9427e6b194c8a10c71cdaedf6a8e19c",
-      "bytes": 3569
+      "sha256": "dee5c950fbd3cf4b7366f8d01496503ff6145d45c5f2f8ebeec5ae4e20da616c",
+      "bytes": 3150
     },
     {
       "path": "docs/WORKFLOW.md",
-      "sha256": "151d6df9f0927109bc61ac5a49dbbb464fe841c4473e5ccc87a0823b84c505b2",
-      "bytes": 5105
+      "sha256": "3a229095ad09b01137edcb16a6bdd025dc2b4306464a13642e10f78ded523a79",
+      "bytes": 4359
     },
     {
       "path": "examples/synthetic/config.json",
@@ -235,8 +235,8 @@
     },
     {
       "path": "scripts/export-release.mjs",
-      "sha256": "035fd217a1c6bfae0a2f0dcffdabe78b0646081a57887d912423e2f692ac3770",
-      "bytes": 2409
+      "sha256": "783db4cd6fa16bab103f53d093713eb4aa16edcd269913856e0e3e132ec6afc4",
+      "bytes": 2426
     },
     {
       "path": "skills/delivery-board/SKILL.md",
@@ -415,13 +415,13 @@
     },
     {
       "path": "docs/SETUP.md",
-      "sha256": "d39241b431eaa06bd9c0f4ed8e1f1b0d0b78c8100caf290fcd40361090ae6f44",
-      "bytes": 8063
+      "sha256": "3c4192409d95e200a9684c40c4a6dc87bd1cfb5b66d3c85d4cf717672ff2fad8",
+      "bytes": 6491
     },
     {
       "path": "docs/SETUP.zh-CN.md",
-      "sha256": "a3a8147fc7d0736b2048446d36777504bfd98f02e098c48ea0ff115682992c55",
-      "bytes": 6251
+      "sha256": "21ae58feb277cf061e0ae8a66ab3ad97f793845865e7b378edb36b601df5acf4",
+      "bytes": 5985
     },
     {
       "path": "scripts/capture-readme.mjs",
@@ -437,6 +437,11 @@
       "path": "launch/assets/demo-overview-zh-CN.png",
       "sha256": "63c7df710f5e6bbca46c14e5773201dabe0088e9d8e4643a19099a1543dc62a7",
       "bytes": 189719
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "64e8747ae0e36b574ac93e9af45238b20d32c78f895c06afe5045d70ba7b7219",
+      "bytes": 750
     }
   ]
 }

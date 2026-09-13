@@ -1,27 +1,34 @@
-# Delivery workflow template
+# Project workflow template
 
-Copy this procedure into the project's own workflow and replace bracketed values before use.
+[Documentation](README.md) · [Workflow guide](WORKFLOW.md)
 
-## Authority and ownership
+Copy this into your project's workflow. Replace every bracketed value before use.
 
-- Authoritative ledger: `[relative ledger path]`
-- Acceptance/specification source: `[relative specification path]`
-- Execution handoff and active writer: `[relative handoff path; owner/process]`
-- Board configuration: `[relative configuration path]`
-- Source checker: `[project checker command]`
-- Code version convention: `[commit, tree, or other reproducible revision]`
+## Project settings
 
-## Start a work item
+| Setting | Value |
+| --- | --- |
+| Authoritative ledger | `[relative ledger path]` |
+| Acceptance/specification source | `[relative specification path]` |
+| Handoff and active writer | `[relative handoff path; owner/process]` |
+| Board configuration | `[relative configuration path]` |
+| Source checker | `[project checker command]` |
+| Code version convention | `[commit, tree, or other reproducible revision]` |
 
-Read the workflow, ledger, prerequisites, acceptance criteria, and handoff. Run the checker. Open the actual evidence and confirm what result and code version it supports. Respect active writer ownership and running processes before changing state. Record the selected outcome, allowed scope, required gates, and owner.
+## Start a task
 
-## Record a terminal result
+1. Read the workflow, ledger, prerequisites, acceptance criteria and handoff.
+2. Run the checker. Open the evidence and confirm its result and code version.
+3. Check active writers and running processes before changing state.
+4. Record the selected outcome, allowed scope, required gates and owner.
 
-After all relevant processes finish, update the authoritative state with:
+## Record a result
+
+Wait for relevant processes to finish. Update the authoritative records with:
 
 | Fact | Record |
 | --- | --- |
-| Work item and outcome | `[ID and observed result]` |
+| Task and outcome | `[ID and observed result]` |
 | Local verification | `[command/review, result, time, code version]` |
 | Evidence | `[relative path or recorded external reference]` |
 | Acceptance | `[decision, authorized reviewer, time; or still pending]` |
@@ -29,20 +36,26 @@ After all relevant processes finish, update the authoritative state with:
 | Blockers and deferrals | `[state, owner, next action, scope]` |
 | Follow-up | `[next permitted work and remaining uncertainty]` |
 
-Keep locally verified, accepted, and delivered states separate. Do not infer human approval from passing checks or remote CI from local results.
+Keep local verification, acceptance and delivery separate. Passing local checks does not establish human approval or remote CI success.
 
 ## Before commit or handoff
 
-Run `[project checker command]` and `npm run check -- --config [relative configuration path]` from the board directory. Check all changed evidence links, dependencies, and code-version references. Review changed files and active writer ownership. Refresh the board, confirm its source facts, and investigate any stale warning.
+- Run `[project checker command]`.
+- From the board directory, run `npm run check -- --config [relative configuration path]`.
+- Check changed evidence links, dependencies, code versions, files and writer ownership.
+- Refresh the board, confirm its source facts and investigate stale warnings.
 
 ## Before milestone acceptance
 
-Review explicit scope, every prerequisite, unresolved blockers, required human gates, delivery state, and supporting evidence. Record the authorized decision in the ledger. Unknown scope or an unresolved gate remains visible; percentage completion is not acceptance.
+Review scope, prerequisites, unresolved blockers, human gates, delivery and evidence. Record the authorized decision in the ledger. Leave unknown scope and unresolved gates visible; a completion percentage is not acceptance.
 
-The board is a replaceable, read-only view. Refresh makes zero model calls, remote CI is recorded-only, and file access is limited to configured sources and allowlisted references. A valid schema does not establish that evidence is true or sufficient.
+## When plans change
 
-## When the plan or structure changes
+1. Update task IDs, status, dependencies, groups, milestone scope and journey membership when the change is agreed.
+2. Remove or redirect deleted-task references. Preserve history and evidence; update adapter mappings where needed. List order is not execution order.
+3. Validate records. Check the board's changed structure and successful read time/hash.
+4. Note any unreconciled changes. Chat or code edits alone do not update the ledger.
 
-Record agreed changes when they happen, not only at task completion. Update affected task IDs, statuses, dependency references, group membership, milestone scope, and journey membership in the authoritative source. Remove or redirect references to deleted tasks; do not treat list position as an execution order. Preserve evidence/history according to the project's own procedure. Update explicit adapter mappings when required.
+Visible pages reread records five seconds after each request finishes. Automatic refresh can be paused; manual Refresh remains available. Hidden pages pause polling. This does not run an agent or watch the filesystem.
 
-Validate the revised records, then refresh the running board and verify the changed structure and successful read time/hash. A conversation or code edit alone does not update a ledger. If records are not yet reconciled, state that gap rather than claim the board reflects those changes. While the page is visible, enabled automatic refresh rereads records five seconds after the previous request completes. It can be paused; manual Refresh remains available. Hidden pages pause polling. This is browser polling, not a filesystem watcher or execution heartbeat.
+The board is read-only and replaceable. Refresh makes no model calls, uses saved CI records and reads only configured sources and allowlisted evidence. Valid structure does not prove the evidence is true or sufficient.

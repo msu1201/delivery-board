@@ -1,24 +1,70 @@
 # Manual startup and recovery
 
-Run from the Delivery Board directory with the actual local configuration:
+[Documentation](README.md) · [Basic setup](SETUP.md)
+
+Use the launcher when you already have a board configuration. Run from the tool directory and replace the sample path:
 
 ```sh
 node src/launcher.js --config local/project.json --port 4317
 ```
 
-The launcher opens the board in the default browser on macOS/Linux and exits. The viewer continues as a detached local process. `--no-open` suppresses browser opening; `--port 0` requests any available loopback port. Configuration is required: there is no silent synthetic-data default. A Finder `.command` entry can invoke this same command using absolute Node, launcher, and configuration paths.
+The launcher opens the default browser on macOS/Linux, then exits. The viewer keeps running as a detached local process. macOS is the verified environment; other platforms still need validation.
 
-Run the same entry again to reuse the verified running viewer or recover after it exits. Concurrent launches for the same canonical configuration file share one lock and produce one viewer. The requested port is only a preference: reuse retains the existing viewer's port, and an occupied port belonging to an unverified service causes a new viewer to use an available port. No process occupying a port is killed.
+## Options
 
-The runtime owner and state live under ignored `local/runtime/`, keyed by the canonical configuration-file path. `--state-dir` can select a different directory for isolated fixtures; use the same directory for all launches of a real configuration. Changing state directories creates a separate coordination scope and must not be used to work around a running viewer.
+| Option | Behavior |
+| --- | --- |
+| `--config` | Required. No demo configuration is selected by default. |
+| `--no-open` | Print the address without opening a browser. |
+| `--port 0` | Choose any available loopback port. |
+| `--state-dir` | Use a separate runtime directory for isolated fixtures. |
 
-Reuse verifies all of the following against the live loopback server: service name, PID, random instance identity, and a SHA-256 fingerprint of the complete loaded configuration, canonical configuration path, and resolved source root. Verification obtains the normal local session cookie and uses `GET /api/identity`; the endpoint keeps the existing host, origin, fetch-site, session, and GET-only restrictions. Runtime URLs must be literal HTTP `127.0.0.1` origins, with no path, credentials, or redirects. Source file contents remain live reads and are not part of launch identity.
+A Finder `.command` file can invoke the same command with absolute Node, launcher and configuration paths.
 
-Changing configuration while its viewer is running produces an actionable error. A live PID whose identity cannot be verified also produces an error; PID files alone never authorize terminating or reusing a process. Legacy viewers started with `src/cli.js` have no launcher identity and cannot be adopted automatically. Before migrating one, inspect its command and source configuration, stop that identified viewer, then use this launcher.
+## Reopen or recover
 
-For shutdown, the launcher prints the verified viewer PID and runtime identity file. Verify that PID still belongs to this Delivery Board viewer before sending it `SIGTERM` (or use Activity Monitor to inspect and stop the identified process). There is intentionally no generic PID-file stop command. Normal termination cleans the lock; after abrupt termination, the next launch reclaims a lock only if its recorded owner PID no longer exists. If a PID has been recycled, identity is unverifiable, or a recovery was interrupted inside its exclusive recovery step, the launcher fails closed instead of guessing. Inspect the saved owner and running processes before manually removing an abandoned runtime directory; do not remove it while its viewer is running.
+Run the same command again. It reuses a verified viewer or starts one if it has exited.
 
-This is manual local process startup, not a service or scheduled task. The viewer is unavailable while the laptop sleeps or is shut down. After restarting the laptop, run the launcher again. It binds only to `127.0.0.1`; it does not enable public hosting, remote access, source execution, Git mutation, login startup, or system scheduling.
+- Concurrent launches for the same canonical configuration share a lock and create one viewer.
+- Port numbers are preferences. Reuse keeps the existing port; an occupied port causes a new viewer to choose another.
+- The launcher never kills a process to free a port.
+- Runtime state lives in ignored `local/runtime/`, keyed by the canonical configuration path.
+
+Use the same state directory for every launch of a real configuration. A different directory creates separate coordination; do not use it to bypass a running viewer.
+
+## If startup refuses to continue
+
+| Situation | What to do |
+| --- | --- |
+| Configuration changed while the viewer is running | Identify and stop that viewer, then launch with the updated configuration. |
+| A live PID cannot be verified | Inspect the process and runtime identity. A PID file alone is not enough to reuse or stop it. |
+| Viewer was started with `src/cli.js` | Inspect its command and configuration, stop that viewer, then use the launcher. Legacy viewers cannot be adopted automatically. |
+| Recovery was interrupted or a PID was recycled | Inspect runtime ownership and running processes. Remove an abandoned runtime directory only after confirming its viewer is stopped. |
+
+## Stop the viewer
+
+1. Read the PID and runtime identity file printed at launch.
+2. Verify the PID still belongs to this Delivery Board viewer.
+3. Send that process `SIGTERM`, or inspect and stop it in Activity Monitor.
+
+There is no generic PID-file stop command. Normal termination cleans the lock. After abrupt termination, the next launch reclaims it only if the recorded owner PID no longer exists. Uncertain ownership stops recovery.
+
+## How reuse is verified
+
+The launcher checks the live loopback server's:
+
+- Service name, PID and random instance identity.
+- SHA-256 fingerprint of the full loaded configuration, canonical configuration path and resolved source root.
+
+Source file contents are reread during use and are not part of launch identity.
+
+Verification obtains the local session cookie and calls `GET /api/identity`. Host, origin, fetch-site, session and GET-only restrictions still apply. Runtime URLs must be literal HTTP `127.0.0.1` origins with no path, credentials or redirects.
+
+## Availability
+
+The viewer binds only to `127.0.0.1`. It is unavailable while the laptop sleeps or is shut down; run the launcher after restarting.
+
+This command does not configure public hosting, remote access, login startup or scheduled tasks. It does not execute source code or change Git state.
 
 ## Verification
 
@@ -26,4 +72,6 @@ This is manual local process startup, not a service or scheduled task. The viewe
 node --test tests/launcher.test.js tests/server.test.js
 ```
 
-Tests use synthetic read-only source fixtures, independent temporary runtime directories, and ephemeral loopback ports. They terminate only viewer processes they created. Coverage includes concurrent launch/recovery, exact-configuration reuse, changed-configuration refusal, unrelated occupied ports, nonlocal runtime-state refusal, explicit configuration/port validation, and identity-route security.
+Tests use synthetic sources, temporary runtime directories and ephemeral ports. They stop only processes they create.
+
+Coverage includes concurrent launch/recovery, configuration reuse and change refusal, occupied ports, nonlocal runtime-state refusal, configuration/port validation and identity-route security.
