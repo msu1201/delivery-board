@@ -1,0 +1,12 @@
+{
+  "root": ".",
+  "adapter": "normalized",
+  "sources": {
+    "graph": "graph.json",
+    "context": "demo-evidence.md"
+  },
+  "git": false,
+  "evidenceAllowlist": [
+    "demo-evidence.md"
+  ]
+}

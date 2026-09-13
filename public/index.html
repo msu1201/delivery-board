@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Delivery Board · 项目依赖</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/vendor/cytoscape.js" defer></script>
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <span class="brand-symbol" aria-hidden="true">⌘</span>
+        <div>
+          <strong>Delivery Board</strong
+          ><span class="eyebrow">项目依赖 · 只读</span>
+        </div>
+      </div>
+      <div class="project">
+        <h1 id="project-name">正在读取项目…</h1>
+        <span id="version">来源版本未知</span>
+      </div>
+      <label class="auto-refresh-control"><input id="auto-refresh" type="checkbox" checked /> 自动刷新 · 5秒</label>
+      <button id="refresh" class="primary">↻ 刷新记录</button>
+    </header>
+    <div id="alert" role="status" aria-live="polite">正在读取已保存记录</div>
+    <section id="current-work" aria-labelledby="current-heading">
+      <div class="current-header"><div><h2 id="current-heading">当前工作</h2><p id="current-note">正在读取任务状态…</p></div>
+      <div class="current-actions"><button id="roadmap-overview">整体路线</button><button id="locate-current" class="primary" disabled>定位当前</button></div></div>
+      <div id="current-tasks" aria-label="记录中进行的任务"></div>
+      <p id="current-position"></p><p id="current-checkpoint" hidden></p><details id="current-more"><summary>任务关系详情</summary><div id="current-context"></div></details>
+    </section>
+    <div id="ci-policy" hidden></div>
+    <main>
+      <nav class="sidebar" aria-label="视图与分组">
+        <span class="eyebrow">工作范围</span>
+        <div id="views"></div>
+        <label class="journey-picker" for="journey-select">用户闭环</label>
+        <select id="journey-select" aria-describedby="journey-note">
+          <option value="">全部任务</option>
+        </select>
+        <p id="journey-note">闭环验收记录未知</p>
+        <div class="section-label">
+          <span>分组</span><button id="expand-all">展开全部</button>
+        </div>
+        <div id="groups"></div>
+        <div class="sidebar-note">
+          箭头表示前置依赖<br />验收 ≠ 合并交付<br />里程碑范围未展开时不计算百分比
+        </div>
+        <details id="source-details">
+          <summary>来源与读取边界</summary>
+          <div id="sources"></div>
+          <p>刷新读取本地记录，不查询远端 CI。结构合法不证明工作完成。</p>
+        </details>
+      </nav>
+      <section class="workspace" aria-label="依赖图工作区">
+        <div class="toolbar">
+          <label class="search-label"
+            >查找节点<input
+              id="search"
+              type="search"
+              placeholder="搜索 ID、用户结果…"
+              autocomplete="off" /></label
+          ><button id="clear-focus" hidden>退出依赖聚焦</button>
+          <button id="close-detail">收起详情</button><div class="zoom">
+            <button id="zoom-out" aria-label="缩小">−</button
+            ><output id="zoom-value">100%</output
+            ><button id="zoom-in" aria-label="放大">＋</button
+            ><button id="fit">查看全图</button>
+          </div>
+        </div>
+        <div class="graph-heading">
+          <div>
+            <h2 id="view-title">依赖总览</h2>
+            <p id="counts">载入中</p>
+          </div>
+          <span class="legend"><span style="color:#2864ae">● 进行中</span>　<span style="color:#34805a">● 已完成</span>　<span style="color:#8656b5">● 部分完成</span>　<span style="color:#b37a22">● 待验收</span>　<span style="color:#b45242">● 受阻</span>　○ 待开始　<span style="color:#87939e">● 未知</span>　深色双边框：选中</span>
+        </div>
+        <div id="journey-summary" hidden></div>
+        <details class="progress-help"><summary>分组层级与完成数说明</summary><p>“分组”卡片汇总当前视图中的直接任务，点击展开具体任务；这不是自动推断的一级／二级产品架构。已完成 X/Y 表示 Y 项中有 X 项满足本项完成标准，不表示正在做第 X 项。技术／文档任务以技术验证通过计入，其他任务以验收通过计入；不等于合并交付。里程碑未展开的范围不纳入推测。颜色优先显示进行中、受阻或待验收，完成数仍独立显示。</p></details>
+        <div class="canvas-wrap"><div
+          id="cy"
+          role="img"
+          aria-label="可缩放的项目依赖图。键盘用户可使用下方节点列表查看相同依赖和详情。"
+        ></div><div class="map-panel"><span>整体位置 · 点击移动视野</span><div id="minimap"></div></div></div>
+        <div class="canvas-footer">
+          <span>拖动画布平移 · 点击分组展开 · 点击节点查看证据</span
+          ><span id="read-time">未成功读取</span>
+        </div>
+        <details class="node-access" open>
+          <summary>节点查找与键盘操作 <span id="result-count"></span></summary>
+          <div id="node-list"></div>
+        </details>
+      </section>
+      <div id="detail-resizer" role="separator" tabindex="0" aria-label="调整详情栏宽度" aria-orientation="vertical" aria-controls="detail" title="左右拖动调整详情宽度；双击恢复默认，也可使用方向键"></div>
+      <aside id="detail" tabindex="-1" aria-label="节点详情">
+        <div class="empty-detail">
+          <span class="eyebrow">节点详情</span>
+          <h2>从结果追溯到证据</h2>
+          <p>选择一个节点，查看用户闭环、前置条件和解除阻塞的下一步。</p>
+          <div class="detail-key">
+            01 用户结果<br />02 验收与交付<br />03 依赖与证据
+          </div>
+        </div>
+      </aside>
+    </main>
+    <dialog id="evidence-dialog">
+      <form method="dialog"><button aria-label="关闭证据">关闭 ×</button></form>
+      <h2 id="evidence-title">证据</h2>
+      <p id="evidence-meta"></p>
+      <pre id="evidence-content"></pre>
+    </dialog>
+  </body>
+</html>

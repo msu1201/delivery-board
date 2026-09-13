@@ -1,0 +1,628 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "id": "wayfarer-fictional-demo",
+    "name": "Wayfarer · Fictional travel planner"
+  },
+  "groups": [
+    {
+      "id": "foundation",
+      "title": "基础与数据"
+    },
+    {
+      "id": "discover",
+      "title": "发现目的地"
+    },
+    {
+      "id": "planning",
+      "title": "编排行程"
+    },
+    {
+      "id": "departure",
+      "title": "出发准备"
+    },
+    {
+      "id": "sharing",
+      "title": "同行分享"
+    }
+  ],
+  "views": [
+    {
+      "id": "all",
+      "title": "全部工作",
+      "mode": "all"
+    },
+    {
+      "id": "plan",
+      "title": "行程编排路径",
+      "mode": "ancestors",
+      "nodeIds": [
+        "PLAN-MILESTONE"
+      ]
+    },
+    {
+      "id": "blocked",
+      "title": "阻塞与待评审",
+      "mode": "blocked"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "TRIP-BRIEF",
+      "title": "确定周末旅行范围",
+      "kind": "documentation",
+      "status": "accepted",
+      "groupId": "foundation",
+      "dependsOn": [],
+      "acceptance": [
+        "虚构范围已确认：三日行程，不包含真实预订。"
+      ],
+      "evidence": [
+        {
+          "label": "虚构演示记录 · Fictional evidence",
+          "ref": "demo-evidence.md"
+        }
+      ],
+      "localVerification": "verified",
+      "delivery": {
+        "status": "pending_integration"
+      },
+      "blockers": [],
+      "approval": {
+        "status": "accepted",
+        "reviewer": "Fictional demo reviewer",
+        "summary": "虚构范围验收，仅用于演示。"
+      }
+    },
+    {
+      "id": "PLACE-DATA",
+      "title": "载入示例目的地",
+      "kind": "technical",
+      "status": "verified",
+      "groupId": "foundation",
+      "dependsOn": [
+        "TRIP-BRIEF"
+      ],
+      "acceptance": [
+        "内置虚构地点具有稳定编号与坐标。"
+      ],
+      "evidence": [
+        {
+          "label": "虚构演示记录 · Fictional evidence",
+          "ref": "demo-evidence.md"
+        }
+      ],
+      "localVerification": "verified",
+      "delivery": {
+        "status": "pending_integration"
+      },
+      "blockers": []
+    },
+    {
+      "id": "TRIP-MODEL",
+      "title": "保存行程草稿",
+      "kind": "technical",
+      "status": "verified",
+      "groupId": "foundation",
+      "dependsOn": [
+        "TRIP-BRIEF"
+      ],
+      "acceptance": [
+        "示例草稿可保存、重新读取，空行程有效。"
+      ],
+      "evidence": [
+        {
+          "label": "虚构演示记录 · Fictional evidence",
+          "ref": "demo-evidence.md"
+        }
+      ],
+      "localVerification": "verified",
+      "delivery": {
+        "status": "pending_integration"
+      },
+      "blockers": []
+    },
+    {
+      "id": "SEARCH",
+      "title": "搜索心仪目的地",
+      "kind": "product",
+      "status": "accepted",
+      "groupId": "discover",
+      "dependsOn": [
+        "PLACE-DATA"
+      ],
+      "acceptance": [
+        "按名称筛选虚构地点；无结果时提供清除筛选入口。"
+      ],
+      "evidence": [
+        {
+          "label": "虚构演示记录 · Fictional evidence",
+          "ref": "demo-evidence.md"
+        }
+      ],
+      "localVerification": "verified",
+      "delivery": {
+        "status": "pending_integration"
+      },
+      "blockers": [],
+      "approval": {
+        "status": "accepted",
+        "reviewer": "Fictional demo reviewer",
+        "summary": "虚构搜索体验验收。"
+      }
+    },
+    {
+      "id": "SHORTLIST",
+      "title": "收藏候选地点",
+      "kind": "product",
+      "status": "verified",
+      "groupId": "discover",
+      "dependsOn": [
+        "SEARCH"
+      ],
+      "acceptance": [
+        "收藏状态可恢复；产品验收仍待完成。"
+      ],
+      "evidence": [
+        {
+          "label": "虚构演示记录 · Fictional evidence",
+          "ref": "demo-evidence.md"
+        }
+      ],
+      "localVerification": "verified",
+      "delivery": {
+        "status": "pending_integration"
+      },
+      "blockers": [],
+      "checkpoint": {
+        "status": "local_verified_pending_acceptance",
+        "summary": "虚构本地检查通过；产品验收未完成。"
+      }
+    },
+    {
+      "id": "DAY-PLAN",
+      "title": "把地点排进每日行程",
+      "kind": "product",
+      "status": "in_progress",
+      "groupId": "planning",
+      "dependsOn": [
+        "SEARCH",
+        "TRIP-MODEL"
+      ],
+      "acceptance": [
+        "同一天可添加多个地点，重复地点给出明确提示。"
+      ],
+      "evidence": [
+        {
+          "label": "虚构演示记录 · Fictional evidence",
+          "ref": "demo-evidence.md"
+        }
+      ],
+      "localVerification": "unknown",
+      "delivery": {
+        "status": "pending_integration"
+      },
+      "blockers": []
+    },
+    {
+      "id": "REORDER",
+      "title": "拖动调整游览顺序",
+      "kind": "product",
+      "status": "planned",
+      "groupId": "planning",
+      "dependsOn": [
+        "DAY-PLAN"
+      ],
+      "acceptance": [
+        "调整顺序后刷新页面仍保留相同顺序。"
+      ],
+      "evidence": [
+        {
+          "label": "虚构演示记录 · Fictional evidence",
+          "ref": "demo-evidence.md"
+        }
+      ],
+      "localVerification": "unknown",
+      "delivery": {
+        "status": "pending_integration"
+      },
+      "blockers": []
+    },
+    {
+      "id": "ROUTE-API",
+      "title": "接入路线估算样例",
+      "kind": "technical",
+      "status": "blocked",
+      "groupId": "planning",
+      "dependsOn": [
+        "PLACE-DATA"
+      ],
+      "acceptance": [
+        "示例路线估算返回距离；缺失数据可解释。"
+      ],
+      "evidence": [
+        {
+          "label": "虚构演示记录 · Fictional evidence",
+          "ref": "demo-evidence.md"
+        }
+      ],
+      "localVerification": "unknown",
+      "delivery": {
+        "status": "pending_integration"
+      },
+      "blockers": [
+        {
+          "id": "ROUTE-FIXTURE",
+          "state": "blocked_external",
+          "owner": "虚构地图团队",
+          "exit": "补齐两地间路线样例",
+          "next_action": "提供缺失的路线样例，再运行示例检查。"
+        }
+      ]
+    },
+    {
+      "id": "TRAVEL-TIME",
+      "title": "显示地点间交通时间",
+      "kind": "product",
+      "status": "planned",
+      "groupId": "planning",
+      "dependsOn": [
+        "DAY-PLAN",
+        "ROUTE-API"
+      ],
+      "acceptance": [
+        "交通估算标记为示例，并处理无路线结果。"
+      ],
+      "evidence": [
+        {
+          "label": "虚构演示记录 · Fictional evidence",
+          "ref": "demo-evidence.md"
+        }
+      ],
+      "localVerification": "unknown",
+      "delivery": {
+        "status": "pending_integration"
+      },
+      "blockers": []
+    },
+    {
+      "id": "PLAN-REVIEW",
+      "title": "确认行程编排体验",
+      "kind": "human",
+      "status": "ready",
+      "groupId": "planning",
+      "dependsOn": [
+        "REORDER",
+        "TRAVEL-TIME"
+      ],
+      "acceptance": [
+        "虚构评审检查编排、保存与交通时间完整路径。"
+      ],
+      "evidence": [
+        {
+          "label": "虚构演示记录 · Fictional evidence",
+          "ref": "demo-evidence.md"
+        }
+      ],
+      "localVerification": "unknown",
+      "delivery": {
+        "status": "pending_integration"
+      },
+      "blockers": []
+    },
+    {
+      "id": "PACKING",
+      "title": "生成出发前清单",
+      "kind": "product",
+      "status": "accepted",
+      "groupId": "departure",
+      "dependsOn": [],
+      "acceptance": [
+        "虚构旅行者可勾选、取消、恢复默认清单。"
+      ],
+      "evidence": [
+        {
+          "label": "虚构演示记录 · Fictional evidence",
+          "ref": "demo-evidence.md"
+        }
+      ],
+      "localVerification": "verified",
+      "delivery": {
+        "status": "pending_integration"
+      },
+      "blockers": [],
+      "approval": {
+        "status": "accepted",
+        "reviewer": "Fictional demo reviewer",
+        "summary": "虚构清单体验验收。"
+      }
+    },
+    {
+      "id": "OFFLINE-CACHE",
+      "title": "缓存离线行程样例",
+      "kind": "technical",
+      "status": "verified",
+      "groupId": "departure",
+      "dependsOn": [],
+      "acceptance": [
+        "离线样例可加载且缓存版本可识别。"
+      ],
+      "evidence": [
+        {
+          "label": "虚构演示记录 · Fictional evidence",
+          "ref": "demo-evidence.md"
+        }
+      ],
+      "localVerification": "verified",
+      "delivery": {
+        "status": "pending_integration"
+      },
+      "blockers": []
+    },
+    {
+      "id": "OFFLINE-READ",
+      "title": "离线查看旅行安排",
+      "kind": "product",
+      "status": "verified",
+      "groupId": "departure",
+      "dependsOn": [
+        "OFFLINE-CACHE"
+      ],
+      "acceptance": [
+        "离线页面显示缓存时间并提示数据可能过期。"
+      ],
+      "evidence": [
+        {
+          "label": "虚构演示记录 · Fictional evidence",
+          "ref": "demo-evidence.md"
+        }
+      ],
+      "localVerification": "verified",
+      "delivery": {
+        "status": "pending_integration"
+      },
+      "blockers": [],
+      "checkpoint": {
+        "status": "local_verified_pending_acceptance",
+        "summary": "虚构本地检查通过；产品验收未完成。"
+      }
+    },
+    {
+      "id": "SHARE-LINK",
+      "title": "生成只读分享链接",
+      "kind": "technical",
+      "status": "ready",
+      "groupId": "sharing",
+      "dependsOn": [],
+      "acceptance": [
+        "虚构分享令牌只允许读取样例行程。"
+      ],
+      "evidence": [
+        {
+          "label": "虚构演示记录 · Fictional evidence",
+          "ref": "demo-evidence.md"
+        }
+      ],
+      "localVerification": "unknown",
+      "delivery": {
+        "status": "pending_integration"
+      },
+      "blockers": []
+    },
+    {
+      "id": "PRIVACY-REVIEW",
+      "title": "评审分享隐私提示",
+      "kind": "human",
+      "status": "awaiting_human",
+      "groupId": "sharing",
+      "dependsOn": [],
+      "acceptance": [
+        "虚构评审确认只读范围与撤回说明。"
+      ],
+      "evidence": [
+        {
+          "label": "虚构演示记录 · Fictional evidence",
+          "ref": "demo-evidence.md"
+        }
+      ],
+      "localVerification": "unknown",
+      "delivery": {
+        "status": "pending_integration"
+      },
+      "blockers": [
+        {
+          "id": "SHARE-REVIEW",
+          "state": "pending",
+          "owner": "虚构体验评审",
+          "exit": "完成分享范围评审",
+          "next_action": "阅读只读分享说明并记录虚构验收。"
+        }
+      ],
+      "humanGate": true
+    },
+    {
+      "id": "SHARED-VIEW",
+      "title": "同行者查看分享行程",
+      "kind": "product",
+      "status": "planned",
+      "groupId": "sharing",
+      "dependsOn": [
+        "SHARE-LINK",
+        "PRIVACY-REVIEW"
+      ],
+      "acceptance": [
+        "分享页清晰显示只读状态，失效链接提供返回入口。"
+      ],
+      "evidence": [
+        {
+          "label": "虚构演示记录 · Fictional evidence",
+          "ref": "demo-evidence.md"
+        }
+      ],
+      "localVerification": "unknown",
+      "delivery": {
+        "status": "pending_integration"
+      },
+      "blockers": []
+    },
+    {
+      "id": "PLAN-MILESTONE",
+      "title": "完成周末行程编排",
+      "kind": "milestone",
+      "status": "planned",
+      "groupId": "planning",
+      "dependsOn": [
+        "PLAN-REVIEW"
+      ],
+      "acceptance": [
+        "编排体验完成虚构验收后，记录此里程碑。"
+      ],
+      "evidence": [
+        {
+          "label": "虚构演示记录 · Fictional evidence",
+          "ref": "demo-evidence.md"
+        }
+      ],
+      "localVerification": "unknown",
+      "delivery": {
+        "status": "pending_integration"
+      },
+      "blockers": [],
+      "children": [
+        "DAY-PLAN",
+        "REORDER",
+        "TRAVEL-TIME",
+        "PLAN-REVIEW"
+      ]
+    },
+    {
+      "id": "DEPARTURE-GUIDE",
+      "title": "阅读出发前指南",
+      "kind": "documentation",
+      "status": "verified",
+      "groupId": "departure",
+      "dependsOn": [],
+      "acceptance": [
+        "指南解释演示范围、离线状态与清单使用方式。"
+      ],
+      "evidence": [
+        {
+          "label": "虚构演示记录 · Fictional evidence",
+          "ref": "demo-evidence.md"
+        }
+      ],
+      "localVerification": "verified",
+      "delivery": {
+        "status": "pending_integration"
+      },
+      "blockers": []
+    }
+  ],
+  "journeys": [
+    {
+      "id": "J-PLAN",
+      "title": "从目的地到每日行程",
+      "outcome": "从目的地到每日行程（虚构演示）",
+      "boundaries": "仅使用内置虚构数据；不提供真实预订或实时旅行服务。",
+      "itemIds": [
+        "SEARCH",
+        "DAY-PLAN",
+        "REORDER",
+        "TRAVEL-TIME",
+        "PLAN-REVIEW"
+      ],
+      "acceptanceCriteria": [
+        "找到地点并编入每日行程。",
+        "调整顺序后可恢复草稿。",
+        "路线缺失时显示明确提示。"
+      ],
+      "recordSource": "explicit",
+      "localVerification": {
+        "status": "partial",
+        "evidence": [
+          {
+            "label": "虚构演示记录 · Fictional evidence",
+            "ref": "demo-evidence.md"
+          }
+        ]
+      },
+      "acceptanceReview": {
+        "status": "not_accepted",
+        "evidence": []
+      },
+      "delivery": {
+        "status": "pending_integration",
+        "evidence": []
+      },
+      "note": "所有状态与证据均为虚构演示，不代表真实产品交付。"
+    },
+    {
+      "id": "J-PACK",
+      "title": "使用出发前清单",
+      "outcome": "使用出发前清单（虚构演示）",
+      "boundaries": "仅使用内置虚构数据；不提供真实预订或实时旅行服务。",
+      "itemIds": [
+        "PACKING",
+        "DEPARTURE-GUIDE"
+      ],
+      "acceptanceCriteria": [
+        "勾选并恢复默认清单。",
+        "阅读演示边界说明。"
+      ],
+      "recordSource": "explicit",
+      "localVerification": {
+        "status": "passed",
+        "evidence": [
+          {
+            "label": "虚构演示记录 · Fictional evidence",
+            "ref": "demo-evidence.md"
+          }
+        ],
+        "testedCommit": "fictional-demo-before-v1"
+      },
+      "acceptanceReview": {
+        "status": "accepted",
+        "evidence": [
+          {
+            "label": "虚构演示记录 · Fictional evidence",
+            "ref": "demo-evidence.md"
+          }
+        ]
+      },
+      "delivery": {
+        "status": "pending_integration",
+        "evidence": []
+      },
+      "note": "所有状态与证据均为虚构演示，不代表真实产品交付。"
+    },
+    {
+      "id": "J-SHARE",
+      "title": "与同行者分享只读行程",
+      "outcome": "与同行者分享只读行程（虚构演示）",
+      "boundaries": "仅使用内置虚构数据；不提供真实预订或实时旅行服务。",
+      "itemIds": [
+        "SHARE-LINK",
+        "PRIVACY-REVIEW",
+        "SHARED-VIEW"
+      ],
+      "acceptanceCriteria": [
+        "分享页不可编辑。",
+        "失效链接提供恢复入口。"
+      ],
+      "recordSource": "explicit",
+      "localVerification": {
+        "status": "not_assessed",
+        "evidence": []
+      },
+      "acceptanceReview": {
+        "status": "not_accepted",
+        "evidence": []
+      },
+      "delivery": {
+        "status": "pending_integration",
+        "evidence": []
+      },
+      "note": "所有状态与证据均为虚构演示，不代表真实产品交付。"
+    }
+  ]
+}

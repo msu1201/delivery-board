@@ -1,0 +1,44 @@
+{
+  "name": "delivery-board",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node src/cli.js",
+    "check": "node src/cli.js --check",
+    "test": "node --test tests/*.test.js",
+    "test:browser": "node tests/browser.mjs",
+    "demo": "node src/entry.js demo",
+    "init": "node src/entry.js init",
+    "open": "node src/entry.js open"
+  },
+  "dependencies": {
+    "cytoscape": "3.33.1"
+  },
+  "devDependencies": {
+    "playwright": "1.58.2"
+  },
+  "description": "Local read-only dependency board that evolves with your saved project records",
+  "license": "MIT",
+  "bin": {
+    "delivery-board": "src/entry.js"
+  },
+  "files": [
+    "src/",
+    "public/",
+    "examples/",
+    "skills/",
+    "scripts/evolve-demo.js",
+    "docs/ADAPTER-CONTRACT.md",
+    "docs/WORKFLOW.md",
+    "docs/WORKFLOW-TEMPLATE.md",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE",
+    "THIRD-PARTY-NOTICES.md",
+    "launch/assets/*.png"
+  ]
+}

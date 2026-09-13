@@ -1,0 +1,386 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "id": "community-archive",
+    "name": "Community archive launch"
+  },
+  "groups": [
+    {
+      "id": "foundation",
+      "title": "Archive foundation"
+    },
+    {
+      "id": "experience",
+      "title": "Visitor experience"
+    },
+    {
+      "id": "review",
+      "title": "Community review"
+    },
+    {
+      "id": "launch",
+      "title": "Launch and outreach"
+    }
+  ],
+  "views": [
+    {
+      "id": "all",
+      "title": "All work",
+      "mode": "all"
+    },
+    {
+      "id": "visitor",
+      "title": "Visitor path",
+      "mode": "ancestors",
+      "nodeIds": [
+        "EXHIBIT"
+      ]
+    },
+    {
+      "id": "review-only",
+      "title": "Review focus",
+      "mode": "include",
+      "nodeIds": [
+        "CURATOR",
+        "EXHIBIT"
+      ]
+    },
+    {
+      "id": "blocked",
+      "title": "Blocked work",
+      "mode": "blocked"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "ARCHIVE-SPEC",
+      "title": "Collection scope agreed",
+      "kind": "documentation",
+      "status": "accepted",
+      "groupId": "foundation",
+      "dependsOn": [],
+      "acceptance": [
+        "The collection boundary and metadata requirements are recorded."
+      ],
+      "evidence": [
+        {
+          "label": "Fictional demonstration record",
+          "ref": "evidence.md"
+        }
+      ],
+      "references": [],
+      "localVerification": "unknown",
+      "delivery": {
+        "status": "not_recorded"
+      },
+      "blockers": [],
+      "humanGate": false,
+      "journeys": [],
+      "approval": {
+        "status": "accepted",
+        "reviewer": "Fictional archive coordinator",
+        "summary": "Demo decision only"
+      }
+    },
+    {
+      "id": "INGEST",
+      "title": "Import the sample collection",
+      "kind": "technical",
+      "status": "blocked",
+      "groupId": "foundation",
+      "dependsOn": [
+        "ARCHIVE-SPEC"
+      ],
+      "acceptance": [
+        "Sample records import with stable identifiers and no duplicates."
+      ],
+      "evidence": [
+        {
+          "label": "Fictional demonstration record",
+          "ref": "evidence.md"
+        }
+      ],
+      "references": [],
+      "localVerification": "verified",
+      "delivery": {
+        "status": "pending_integration",
+        "summary": "Preview service access is pending."
+      },
+      "blockers": [
+        {
+          "id": "PREVIEW-ACCESS",
+          "state": "blocked_external",
+          "owner": "Archive administrator",
+          "next_action": "Restore access to the shared preview environment."
+        }
+      ],
+      "humanGate": false,
+      "journeys": [],
+      "checkpoint": {
+        "status": "local_verified_pending_delivery",
+        "summary": "Fictional local import and duplicate checks passed."
+      }
+    },
+    {
+      "id": "SEARCH",
+      "title": "Find a collection by keyword",
+      "kind": "product",
+      "status": "planned",
+      "groupId": "experience",
+      "dependsOn": [
+        "INGEST"
+      ],
+      "acceptance": [
+        "A visitor finds a known collection by title or keyword.",
+        "Empty results explain how to try another search."
+      ],
+      "evidence": [
+        {
+          "label": "Fictional demonstration record",
+          "ref": "evidence.md"
+        }
+      ],
+      "references": [],
+      "localVerification": "unknown",
+      "delivery": {
+        "status": "not_recorded"
+      },
+      "blockers": [],
+      "humanGate": false,
+      "journeys": [
+        {
+          "id": "J01",
+          "title": "Discover a collection",
+          "outcome": "Find a collection and read its first exhibit",
+          "boundaries": "Empty results; missing image; restricted material",
+          "coverage": "SEARCH, EXHIBIT"
+        }
+      ]
+    },
+    {
+      "id": "RIGHTS",
+      "title": "Community approves display permissions",
+      "kind": "human",
+      "status": "awaiting_human",
+      "groupId": "review",
+      "dependsOn": [
+        "ARCHIVE-SPEC"
+      ],
+      "acceptance": [
+        "An authorized community reviewer approves the display scope."
+      ],
+      "evidence": [
+        {
+          "label": "Fictional demonstration record",
+          "ref": "evidence.md"
+        }
+      ],
+      "references": [],
+      "localVerification": "unknown",
+      "delivery": {
+        "status": "not_recorded"
+      },
+      "blockers": [
+        {
+          "id": "PERMISSION-REVIEW",
+          "state": "deferred",
+          "owner": "Community reviewer",
+          "next_action": "Review the proposed display list at the next meeting."
+        }
+      ],
+      "humanGate": true,
+      "journeys": [],
+      "approval": null,
+      "deferral": {
+        "status": "deferred",
+        "scope": "Permission review is scheduled for the next community meeting."
+      }
+    },
+    {
+      "id": "CURATOR",
+      "title": "Curator reviews the exhibit narrative",
+      "kind": "product",
+      "status": "verified",
+      "groupId": "review",
+      "dependsOn": [
+        "ARCHIVE-SPEC"
+      ],
+      "acceptance": [
+        "A curator accepts the narrative and attribution for the launch exhibit."
+      ],
+      "evidence": [
+        {
+          "label": "Fictional demonstration record",
+          "ref": "evidence.md"
+        }
+      ],
+      "references": [],
+      "localVerification": "verified",
+      "delivery": {
+        "status": "not_recorded"
+      },
+      "blockers": [],
+      "humanGate": false,
+      "journeys": [],
+      "checkpoint": {
+        "summary": "Fictional content checks passed; curator acceptance remains pending."
+      },
+      "approval": null
+    },
+    {
+      "id": "EXHIBIT",
+      "title": "Read the first digital exhibit",
+      "kind": "product",
+      "status": "planned",
+      "groupId": "experience",
+      "dependsOn": [
+        "SEARCH",
+        "RIGHTS",
+        "CURATOR"
+      ],
+      "acceptance": [
+        "A visitor opens the exhibit and reads attributed collection material.",
+        "Restricted material remains outside the visitor view."
+      ],
+      "evidence": [
+        {
+          "label": "Fictional demonstration record",
+          "ref": "evidence.md"
+        }
+      ],
+      "references": [],
+      "localVerification": "unknown",
+      "delivery": {
+        "status": "not_recorded"
+      },
+      "blockers": [],
+      "humanGate": false,
+      "journeys": [
+        {
+          "id": "J01",
+          "title": "Discover a collection",
+          "outcome": "Find a collection and read its first exhibit",
+          "boundaries": "Empty results; missing image; restricted material",
+          "coverage": "SEARCH, EXHIBIT"
+        }
+      ]
+    },
+    {
+      "id": "GUIDE",
+      "title": "Publish contributor instructions",
+      "kind": "documentation",
+      "status": "ready",
+      "groupId": "launch",
+      "dependsOn": [
+        "ARCHIVE-SPEC"
+      ],
+      "acceptance": [
+        "A contributor can prepare a submission using the documented steps."
+      ],
+      "evidence": [
+        {
+          "label": "Fictional demonstration record",
+          "ref": "evidence.md"
+        }
+      ],
+      "references": [],
+      "localVerification": "unknown",
+      "delivery": {
+        "status": "not_recorded"
+      },
+      "blockers": [],
+      "humanGate": false,
+      "journeys": []
+    },
+    {
+      "id": "LAUNCH",
+      "title": "Open the archive to visitors",
+      "kind": "milestone",
+      "status": "planned",
+      "groupId": "launch",
+      "dependsOn": [
+        "EXHIBIT",
+        "GUIDE"
+      ],
+      "acceptance": [
+        "Exhibit and contributor instructions meet their acceptance criteria.",
+        "All required permission decisions are recorded."
+      ],
+      "evidence": [
+        {
+          "label": "Fictional demonstration record",
+          "ref": "evidence.md"
+        }
+      ],
+      "references": [],
+      "localVerification": "unknown",
+      "delivery": {
+        "status": "not_recorded"
+      },
+      "blockers": [],
+      "humanGate": false,
+      "journeys": [],
+      "children": [
+        "EXHIBIT",
+        "GUIDE",
+        "RIGHTS"
+      ],
+      "scopeUnknown": false
+    },
+    {
+      "id": "POSTER",
+      "title": "Prepare the community notice poster",
+      "kind": "technical",
+      "status": "verified",
+      "groupId": "launch",
+      "dependsOn": [],
+      "acceptance": [
+        "The demonstration poster exports at the required print size."
+      ],
+      "evidence": [
+        {
+          "label": "Fictional demonstration record",
+          "ref": "evidence.md"
+        }
+      ],
+      "references": [],
+      "localVerification": "verified",
+      "delivery": {
+        "status": "not_recorded"
+      },
+      "blockers": [],
+      "humanGate": false,
+      "journeys": [],
+      "checkpoint": {
+        "summary": "Fictional export-size check passed."
+      }
+    },
+    {
+      "id": "NEXT-SEASON",
+      "title": "Define the next collection season",
+      "kind": "milestone",
+      "status": "unknown",
+      "groupId": "launch",
+      "dependsOn": [],
+      "acceptance": [
+        "Define the season scope before scheduling delivery."
+      ],
+      "evidence": [
+        {
+          "label": "Fictional demonstration record",
+          "ref": "evidence.md"
+        }
+      ],
+      "references": [],
+      "localVerification": "unknown",
+      "delivery": {
+        "status": "not_recorded"
+      },
+      "blockers": [],
+      "humanGate": false,
+      "journeys": [],
+      "children": [],
+      "scopeUnknown": true
+    }
+  ]
+}
