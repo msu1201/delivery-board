@@ -22,10 +22,15 @@
         <span id="version">来源版本未知</span>
       </div>
       <div class="mode-switch" role="group" aria-label="查看方式"><button id="mode-graph" aria-pressed="true">图模式</button><button id="mode-history" aria-pressed="false">工作记录</button></div>
-      <label class="auto-refresh-control"><input id="auto-refresh" type="checkbox" checked /> 自动刷新 · 5秒</label>
+      <label class="auto-refresh-control"><input id="auto-refresh" type="checkbox" /> 自动刷新 · 本地读取</label>
       <button id="refresh" class="primary">↻ 刷新记录</button>
     </header>
     <div id="alert" role="status" aria-live="polite">正在读取已保存记录</div>
+    <section id="change-review" aria-label="自上次查看以来的变化">
+      <div class="change-toolbar"><strong id="change-summary" aria-live="polite">正在建立比较起点…</strong><div><button id="locate-change">定位变化</button><button id="mark-seen">标记全部已看</button></div></div>
+      <p id="change-note">本地读取与比较，不消耗模型 token</p>
+      <details id="change-details"><summary>查看变化</summary><ul id="change-list"></ul></details>
+    </section>
     <section id="current-work" aria-labelledby="current-heading">
       <div class="current-header"><div><h2 id="current-heading">当前工作</h2><p id="current-note">正在读取任务状态…</p></div>
       <div class="current-actions"><button id="roadmap-overview">整体路线</button><button id="locate-current" class="primary" disabled>定位当前</button></div></div>

@@ -65,7 +65,7 @@ List order does not define execution order. Validate, then check that the board 
 
 ## Refresh and availability
 
-- Visible pages reread records five seconds after the previous request finishes. Refresh can be paused; manual Refresh remains available. Hidden pages pause polling.
+- Automatic refresh is off by default. When enabled, visible pages reread records five seconds after the previous request finishes. Refresh can be paused; manual Refresh remains available. Hidden pages pause polling.
 - This is browser polling, not a filesystem watcher or agent heartbeat.
 - Refresh makes no model calls. Remote CI comes from saved records; file access is limited to configured sources and allowlisted evidence.
 - If the viewer is unavailable, continue with the project's ledger, checker and evidence. The checker runs without a server. Opening the board is not required for development, acceptance or release.

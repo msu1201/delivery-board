@@ -75,7 +75,7 @@ Code can show that an implementation exists. It cannot prove acceptance or deliv
 
 1. You agree on a plan or task change with your agent.
 2. The agent updates and validates the saved records.
-3. The visible board rereads them about every five seconds.
+3. Click Refresh to read the saved changes. Automatic refresh is off by default; opt in to local polling every five seconds.
 
 Chat alone does not update the board. If a read fails, the previous graph stays visible with a stale warning. You can pause automatic refresh.
 

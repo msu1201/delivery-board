@@ -72,7 +72,7 @@ Agree on the change, update the source records and adapter mappings, then valida
 
 | Refresh behavior | What to expect |
 | --- | --- |
-| Visible page | Reads again five seconds after the previous read finishes |
+| Visible page, auto-refresh enabled | Reads again five seconds after the previous read finishes |
 | Hidden page | Pauses polling |
 | Unchanged records | Keeps the existing graph |
 | Changed records | Retains zoom and selections where the selected items still exist |
@@ -147,3 +147,13 @@ Browser checks need Chrome; set `CHROME_PATH` if needed. This preview has been v
 
 
 Use the top-right Graph / Work records control to switch between dependencies and saved work history. Task links return to the graph. Missing history or timestamps stay explicitly unrecorded; ask your agent to maintain workLog each round.
+
+## Changes since your last review
+
+Refresh is manual by default. Local reads, comparisons and highlighting make no model calls. Agents may use model tokens when analyzing projects or maintaining records; this is separate from viewing.
+
+The first valid view establishes a baseline. Refresh does not acknowledge changes. The summary lists new/removed/updated tasks, changed dependencies, verification, acceptance and delivery separately. Changed graph nodes have a soft halo and a ✦ marker; View changes includes removals and before/after records. Locate changes cycles through existing changed tasks.
+
+Work records show Unread or Updated. Expand a round to acknowledge that version; later edits make it unread again. Mark all seen acknowledges the displayed snapshot. Failed/stale snapshots cannot be acknowledged.
+
+Review state is saved in this browser's local storage, scoped to the viewer origin and project source. It contains a local copy of reviewed task data and history signatures; it is not synced to other devices. Clearing browser data or changing the viewer origin resets the baseline. If storage is unavailable/full, comparison works for the current page with a visible persistence warning. Highlights are static and do not move graph nodes.

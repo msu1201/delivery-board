@@ -1,0 +1,32 @@
+import {chromium} from 'playwright';
+import {mkdtemp,writeFile,rm} from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {Source,loadConfig} from '../src/source.js';
+import {startServer} from '../src/server.js';
+const root=await mkdtemp(path.join(os.tmpdir(),'board-review-'));
+const g={schemaVersion:1,project:{id:'one',name:'Review test'},groups:[{id:'g',title:'Group'}],views:[{id:'all',title:'All',mode:'all'}],nodes:[{id:'A',title:'Task A',kind:'technical',status:'planned',groupId:'g',dependsOn:[],acceptance:[],evidence:[]}]};
+const save=()=>writeFile(path.join(root,'graph.json'),JSON.stringify(g));await save();
+await writeFile(path.join(root,'config.json'),JSON.stringify({root:'.',adapter:'normalized',sources:{graph:'graph.json'},git:false}));
+const server=await startServer(new Source(await loadConfig(path.join(root,'config.json'))),0),browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});
+try{
+ const p=await browser.newPage({viewport:{width:1440,height:1000}});const errors=[];p.on('pageerror',e=>errors.push(e.message));let reads=0;p.on('request',r=>{if(r.url().endsWith('/api/snapshot'))reads++});
+ await p.goto(server.url);await p.locator('#minimap svg').waitFor();assert.equal(await p.locator('#auto-refresh').isChecked(),false);
+ const initial=reads;await p.waitForTimeout(5500);assert.equal(reads,initial);
+ assert.match(await p.locator('#change-summary').innerText(),/暂无新变化/);
+ g.nodes[0].status='verified';g.workLog=[{id:'round',title:'New round',summary:'Problem',result:'Resolved',status:'completed',startedAt:null,endedAt:null,taskIds:['A'],previousTaskIds:[],nextTaskIds:[]}];await save();
+ await p.locator('#refresh').click();await p.waitForFunction(()=>document.getElementById('change-summary').textContent.includes('1 项更新'));
+ assert.equal(await p.evaluate(()=>document.getElementById('cy')._cyreg.cy.nodes('.unseen-change').length),1);
+ if(process.env.REVIEW_SCREENSHOT) await p.screenshot({path:process.env.REVIEW_SCREENSHOT});
+ await p.locator('#refresh').click();await p.waitForTimeout(200);assert.match(await p.locator('#change-summary').innerText(),/1 项更新/);
+ await p.reload();await p.locator('#minimap svg').waitFor();assert.match(await p.locator('#change-summary').innerText(),/1 项更新/);
+ await p.locator('#mode-history').click();assert.match(await p.locator('.read-badge').innerText(),/未读/);
+ await p.locator('.history-round-detail summary').click();await p.waitForFunction(()=>document.querySelector('.read-badge').textContent==='已读');
+ g.workLog[0].result='Updated result';await save();await p.locator('#refresh').click();await p.waitForFunction(()=>document.querySelector('.read-badge').textContent.includes('有更新'));
+ await p.locator('#mark-seen').click();assert.match(await p.locator('#change-summary').innerText(),/暂无新变化/);
+ g.nodes=[];await save();await p.locator('#refresh').click();await p.waitForFunction(()=>document.getElementById('change-summary').textContent.includes('1 项移除'));
+ await p.locator('#change-details summary').click();assert.match(await p.locator('#change-list').innerText(),/Task A/);
+ g.project.id='other';await save();await p.locator('#refresh').click();await p.waitForFunction(()=>document.getElementById('change-summary').textContent.includes('暂无新变化'));
+ assert.deepEqual(errors,[]);console.log('Review browser passed: manual default, stable unread across refresh/reopen, graph highlights, per-round reads/updates, removal and project isolation.');
+}finally{await browser.close();await server.close();await rm(root,{recursive:true,force:true});}

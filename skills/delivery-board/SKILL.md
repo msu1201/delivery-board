@@ -42,6 +42,6 @@ Validate and inspect the displayed source freshness. Structural checks do not ve
 
 When authorized work changes an approved plan or its delivery facts, reconcile the saved graph in that same work session, including references, deletions, scope, and journeys. Follow existing project ownership and approval rules. Record uncertainties instead of silently resolving them. Report any unreconciled gap.
 
-The visible page polls saved sources every five seconds while automatic refresh is enabled. This reads files; it makes no model calls and performs no ongoing source maintenance. A chat reply, code edit, or heartbeat alone cannot update graph facts. After configuration or evidence allowlist changes, restart the viewer and verify the new configuration.
+Automatic refresh is off by default and costs no model tokens. When enabled, the visible page polls saved sources every five seconds while automatic refresh is enabled. This reads files; it makes no model calls and performs no ongoing source maintenance. A chat reply, code edit, or heartbeat alone cannot update graph facts. After configuration or evidence allowlist changes, restart the viewer and verify the new configuration.
 
 For maintainers reviewing this skill, [references/evaluation-scenarios.md](references/evaluation-scenarios.md) records concrete cases and expected outcomes, with the limits of the review stated explicitly.

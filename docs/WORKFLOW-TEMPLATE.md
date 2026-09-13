@@ -56,6 +56,6 @@ Review scope, prerequisites, unresolved blockers, human gates, delivery and evid
 3. Validate records. Check the board's changed structure and successful read time/hash.
 4. Note any unreconciled changes. Chat or code edits alone do not update the ledger.
 
-Visible pages reread records five seconds after each request finishes. Automatic refresh can be paused; manual Refresh remains available. Hidden pages pause polling. This does not run an agent or watch the filesystem.
+Automatic refresh is off by default. When enabled, visible pages reread records five seconds after each request finishes. Automatic refresh can be paused; manual Refresh remains available. Hidden pages pause polling. This does not run an agent or watch the filesystem.
 
 The board is read-only and replaceable. Refresh makes no model calls, uses saved CI records and reads only configured sources and allowlisted evidence. Valid structure does not prove the evidence is true or sufficient.

@@ -10,6 +10,8 @@ import {startServer} from '../src/server.js';
 const chinese=process.argv.includes('--zh-CN');
 const repo=fileURLToPath(new URL('../',import.meta.url));
 const pairs = [
+['与上次已看相比，暂无新变化','No changes since your last review'],['比较起点：','Review baseline: '],['本地比较，不消耗模型 token','Local comparison; no model tokens'],['本地读取与比较，不消耗模型 token','Local reads and comparison; no model tokens'],['正在建立比较起点…','Establishing review baseline…'],['定位变化','Locate changes'],['标记全部已看','Mark all seen'],['查看变化','View changes'],['自动刷新 · 本地读取','Auto-refresh · local reads'],
+
 ['查看方式','View mode'],['图模式','Graph'],['工作记录','Work records'],
 ['“分组”卡片汇总当前视图中的直接任务，点击展开具体任务；这不是自动推断的一级／二级产品架构。已完成 X/Y 表示 Y 项中有 X 项满足本项完成标准，不表示正在做第 X 项。技术／文档任务以技术验证通过计入，其他任务以验收通过计入；不等于合并交付。里程碑未展开的范围不纳入推测。颜色优先显示进行中、受阻或待验收，完成数仍独立显示。','Expand groups to see their tasks. X/Y counts completed tasks, not execution order. Technical and documentation tasks count when verified; product tasks count when accepted. Delivery is recorded separately.'],
 ['选择一个闭环，逐项查看独立验收。关联任务通过不代表闭环通过。','Choose a journey to review its acceptance records.'],

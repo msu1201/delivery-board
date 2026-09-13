@@ -16,7 +16,7 @@ const browser=await chromium.launch({headless:true,executablePath:process.env.CH
 try {
  const context=await browser.newContext({viewport:{width:1440,height:1000},recordVideo:{dir:root,size:{width:1440,height:1000}}});
  const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto(server.url);await page.locator('#minimap svg').waitFor();
+ await page.goto(server.url);await page.locator("#auto-refresh").check();await page.locator('#minimap svg').waitFor();
  await page.waitForTimeout(2000);await page.locator('#roadmap-overview').click();
  await page.screenshot({path:path.join(out,'demo-overview.png')});await page.waitForTimeout(2000);
  await page.locator('#locate-current').click();await page.screenshot({path:path.join(out,'demo-current.png')});await page.waitForTimeout(2500);

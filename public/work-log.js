@@ -1,7 +1,7 @@
 const labels={in_progress:'进行中',completed:'本轮完成',blocked:'受阻',unknown:'结果未知'};
 const make=(tag,text,cls)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e;};
 const date=value=>value ? new Date(value).toLocaleString(undefined,{hour12:false}) : '未记录';
-export function renderWorkLog(container, graph, selectTask) {
+export function renderWorkLog(container, graph, selectTask, {unread=()=>null, markRead=()=>{}} = {}) {
  const time = value => Number.isFinite(Date.parse(value)) ? Date.parse(value) : -Infinity;
  const entries=[...(graph?.workLog||[])].sort((a,b)=>time(b.startedAt)-time(a.startedAt));
  const heading=make('div',undefined,'history-heading');
@@ -15,12 +15,17 @@ export function renderWorkLog(container, graph, selectTask) {
   const top=make('div',undefined,'history-card-heading');top.append(make('h3',entry.title),make('span',labels[entry.status],'history-status'));card.append(top);
   const facts=make('dl');
   for(const [label,value] of [['解决的问题',entry.summary||'未记录'],['达到的效果',entry.result||'未记录'],['执行时间',`${date(entry.startedAt)} → ${entry.endedAt ? date(entry.endedAt) : entry.status==='in_progress'?'进行中（尚未记录结束）':'结束时间未记录'}`]]){const row=make('div');row.append(make('dt',label),make('dd',value));facts.append(row);}
-  card.append(facts);
+  const detail=make('details',undefined,'history-round-detail');
+  const summary=make('summary','展开本轮详情');detail.append(summary,facts);
+  const flag=unread(entry),badge=make('span',flag==='new'?'● 未读':flag==='updated'?'● 有更新':'已读','read-badge');top.append(badge);
+  card.classList.toggle('history-unread',!!flag);
+  detail.addEventListener('toggle',()=>{if(detail.open&&unread(entry)){if(markRead(entry)!==false){badge.textContent='已读';card.classList.remove('history-unread');}}});
+  card.append(detail);
   for(const [key,label] of [['taskIds','关联任务'],['previousTaskIds','当时的前置'],['nextTaskIds','当时的后续']]){
    const row=make('div',undefined,'history-links');row.append(make('span',label));
    if(!entry[key].length)row.append(make('span','未记录','history-muted'));
    for(const id of entry[key]){const node=graph.nodes.find(n=>n.id===id);if(node){const b=make('button',`${id} · ${node.title}`);b.addEventListener('click',()=>selectTask(id));row.append(b);}else row.append(make('span',`${id}（当前图中不存在）`,'history-muted'));}
-   card.append(row);
+   detail.append(row);
   }
   list.append(card);
  }

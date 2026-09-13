@@ -13,7 +13,7 @@ const server=await startServer(new Source(await loadConfig(path.join(root,'confi
 const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});
 try{
  const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto(server.url);await page.locator('#minimap svg').waitFor();
+ await page.goto(server.url);await page.locator('#auto-refresh').check();await page.locator('#minimap svg').waitFor();
  await page.locator('#mode-history').click();assert.match(await page.locator('#work-history').innerText(),/还没有保存/);
  const entry={id:'round-1',title:'<img src=x onerror=alert(1)>',summary:'Restore saved work',result:'Draft recovered',status:'completed',startedAt:null,endedAt:null,taskIds:['A'],previousTaskIds:['REMOVED'],nextTaskIds:[]};
  graph.workLog=[entry,{...entry,id:'round-2',title:'Latest round',startedAt:'2026-09-13T01:00:00Z',endedAt:'2026-09-13T02:00:00Z'}];
@@ -21,9 +21,11 @@ try{
  await page.waitForFunction(()=>document.querySelectorAll('.history-card').length===2,{},{timeout:15000});
  assert.equal(await page.locator('.history-card h3').first().innerText(),'Latest round');
  assert.equal(await page.locator('#work-history img').count(),0);
+ await page.locator('.history-round-detail').first().evaluate(e=>e.open=true);
  assert.match(await page.locator('#work-history').innerText(),/REMOVED（当前图中不存在）/);
- assert.match(await page.locator('#work-history').innerText(),/结束时间未记录/);
+ assert.match(await page.locator('#work-history').textContent(),/结束时间未记录/);
  await page.reload();await page.locator('.history-card').first().waitFor();assert.equal(await page.locator('#mode-history').getAttribute('aria-pressed'),'true');
+ await page.locator('.history-round-detail').first().evaluate(e=>e.open=true);
  await page.locator('.history-links button').first().click();assert.equal(await page.locator('#mode-graph').getAttribute('aria-pressed'),'true');assert.match(await page.locator('#detail').innerText(),/Task A/);
  await page.locator('#mode-history').click();
  graph.workLog[0].endedAt='invalid';await writeFile(path.join(root,'graph.json'),JSON.stringify(graph));

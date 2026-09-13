@@ -1,3 +1,4 @@
+import { ReviewState } from "./seen-changes.js";
 import { renderWorkLog } from "./work-log.js";
 import { AutoRefresh } from "./auto-refresh.js";
 import { summarizeProgress, journeyProgress } from "/progress.js";
@@ -41,12 +42,14 @@ const canvas = new GraphCanvas($("cy"), {
   toggle: (id) => toggle(id),
   onZoom: (z) => ($("zoom-value").textContent = `${Math.round(z * 100)}%`),
 });
+let review = null;
+let reviewKey = null;
 let graphDrawn = false;
 let displayMode = "graph";
 try { displayMode = localStorage.getItem("delivery-board.view-mode") === "history" ? "history" : "graph"; } catch {}
 if (new URLSearchParams(location.search).get("view") === "history") displayMode = "history";
 function updateHistory() {
-  renderWorkLog($("work-history"), state.graph, id => { setMode("graph"); select(id); });
+  renderWorkLog($("work-history"), state.graph, id => { setMode("graph"); select(id); }, { unread: entry => review?.unread(entry), markRead: entry => { if(state.snapshot?.stale)return false; review?.markRecord(entry); renderChanges(); return true; } });
 }
 function setMode(mode) {
   displayMode = mode;
@@ -61,6 +64,47 @@ function setMode(mode) {
 $("mode-graph").onclick = () => setMode("graph");
 $("mode-history").onclick = () => setMode("history");
 setMode(displayMode);
+function highlightChanges() {
+  if (!review || !state.graph) return;
+  const changes=review.changes(state.graph), ids=new Set(changes.filter(c=>c.collection==="nodes").map(c=>c.id));
+  const groups=new Set(changes.filter(c=>c.collection==="groups").map(c=>c.id));
+  canvas.cy.nodes().forEach(n=>{
+    const changed=ids.has(n.data("originalId")) || groups.has(n.data("groupId")) || (n.data("collapsed") && state.graph.nodes.some(x=>x.groupId===n.data("groupId")&&ids.has(x.id)));
+    n.toggleClass("unseen-change",changed);
+    n.data("label",(changed?"✦ ":"")+String(n.data("label")||"").replace(/^✦ /,""));
+  });
+  const oldEdges=new Set(Object.values(review.base.nodes).flatMap(n=>(n.dependsOn||[]).map(id=>JSON.stringify([id,n.id]))));
+  canvas.cy.edges().forEach(e=>e.toggleClass("unseen-change",(e.data("dependencies")||[]).some(d=>!oldEdges.has(JSON.stringify([d.source,d.target])))));
+}
+function renderChanges() {
+  if (!review || !state.graph) return;
+  const changes=review.changes(state.graph), nodes=changes.filter(c=>c.collection==="nodes");
+  const unread=(state.graph.workLog||[]).filter(e=>review.unread(e)).length;
+  const count=predicate=>nodes.filter(predicate).length;
+  const parts=[[count(c=>c.kind==="added"),"项新增"],[count(c=>c.kind==="removed"),"项移除"],[count(c=>c.kind==="updated"),"项更新"],[count(c=>c.fields.includes("dependsOn")),"项依赖调整"],[count(c=>c.fields.includes("status")&&c.after.status==="in_progress"),"项开始"],[count(c=>c.fields.includes("status")&&c.after.status==="accepted"),"项验收通过"],[count(c=>c.fields.includes("status")&&c.after.status==="verified"),"项验证通过"],[count(c=>c.fields.includes("delivery")&&c.after.delivery?.status==="delivered"),"项交付"],[changes.filter(c=>c.collection!=="nodes").length,"处分组／闭环变化"],[unread,"轮未读"]].filter(([n])=>n).map(([n,label])=>`${n} ${label}`);
+  $("change-summary").textContent = parts.length ? `自上次已看：${parts.join(" · ")}` : "与上次已看相比，暂无新变化";
+  $("change-note").textContent = review.persistent ? `比较起点：${time(review.base.at)} · 本地比较，不消耗模型 token` : "浏览器无法保存已读状态；本页仍可比较，重新打开后需建立起点。";
+  const list=$("change-list");list.replaceChildren();
+  const fieldNames={title:"标题",status:"状态",dependsOn:"前置依赖",localVerification:"本地验证",delivery:"交付记录",groupId:"所属分组",children:"范围",acceptance:"验收条件",checkpoint:"检查点",blockers:"阻塞",evidence:"证据",references:"来源",itemIds:"关联任务",acceptanceReview:"验收记录"};
+  for(const change of changes){
+    const row=el("li"), target=change.after||change.before;
+    const label=`${change.collection==="groups"?"分组 · ":change.collection==="journeys"?"闭环 · ":""}${target.title||change.id}`;
+    if(change.collection==="nodes"&&change.after) row.append(button(label,()=>{setMode("graph");select(change.id);}));else row.append(el("strong",label));
+    const format=(key,value)=>key==='status'?(statusText[value]||value||'未记录'):value===undefined?'未记录':typeof value==='string'?value:JSON.stringify(value);
+    row.append(el("p",change.kind==="added"?"新增记录":change.kind==="removed"?"已从当前记录移除":change.fields.map(key=>`${fieldNames[key]||key}：${format(key,change.before[key])} → ${format(key,change.after[key])}`).join("；")));
+    list.append(row);
+  }
+  if(unread){const row=el("li");row.append(button(`查看 ${unread} 轮未读工作记录`,()=>setMode("history")));list.append(row);}
+  if(!changes.length&&!unread)list.append(el("li","第一次打开会建立比较起点；刷新不会自动标记已看。"));
+  highlightChanges();
+}
+$("mark-seen").onclick=()=>{if(review&&state.graph&&!state.snapshot.stale){review.markAll(state.graph);renderChanges();updateHistory();}};
+let changeCursor=0;
+$("locate-change").onclick=()=>{
+  const changes=review?.changes(state.graph).filter(c=>c.collection==="nodes"&&c.after)||[];
+  $("change-details").open=true;
+  if(changes.length){const c=changes[changeCursor++%changes.length];setMode("graph");select(c.id);}
+};
 async function fetchJSON(url) {
   const response = await fetch(url, {
     cache: "no-store",
@@ -78,9 +122,10 @@ const refresh = new RefreshController(
   (snapshot) => {
     const first = !state.graph;
     const previous = state.snapshot;
-    const sameSource = !first && snapshot.graph && previous?.freshness?.hash === snapshot.freshness?.hash && JSON.stringify(previous?.freshness?.git) === JSON.stringify(snapshot.freshness?.git);
+    const sameSource = !first && review && snapshot.graph && previous?.freshness?.hash === snapshot.freshness?.hash && JSON.stringify(previous?.freshness?.git) === JSON.stringify(snapshot.freshness?.git);
     state.snapshot = snapshot;
     $("alert").classList.toggle("error", snapshot.stale);
+    $("mark-seen").disabled = snapshot.stale;
     $("alert").textContent = snapshot.stale
       ? `⚠ STALE / ERROR · ${snapshot.error}。${snapshot.graph ? "保留上次成功图；不是最新状态。" : "尚无有效快照。"} 尝试 ${time(snapshot.attemptedAt)}`
       : "✓ 已读取保存的记录 · 只读 · 远端 CI 未重新查询";
@@ -95,6 +140,15 @@ const refresh = new RefreshController(
       return;
     }
     state.graph = snapshot.graph;
+    if (!snapshot.stale) {
+      const key = JSON.stringify([snapshot.freshness.root, state.graph.project.id || state.graph.project.name]);
+      if (reviewKey !== key) {
+        let storage; try { storage = localStorage; } catch { storage = {getItem:()=>null,setItem:()=>{throw Error("unavailable")}}; }
+        review = new ReviewState(storage, key); reviewKey = key;
+      }
+      review.observe(state.graph);
+    }
+    renderChanges();
     updateHistory();
     if (state.focus && !state.graph.nodes.some(n => n.id === state.focus)) {
       state.focus = null;
@@ -287,6 +341,7 @@ function renderGraph(preserve = true) {
     journeyId: state.journey,
   });
   graphDrawn = true;
+  highlightChanges();
   const v = state.graph.views.find((v) => v.id === state.view);
   const journey = state.graph.journeys?.find((j) => j.id === state.journey);
   $("view-title").textContent = journey
@@ -415,6 +470,8 @@ function renderDetail() {
     el("h2", n.title, "detail-title"),
     el("p", checkpointSummary(n), "checkpoint-summary"),
   );
+  const delta=review?.changes(state.graph).find(c=>c.collection==="nodes"&&c.id===n.id);
+  if(delta){const note=el("div",undefined,"node-change-note");note.append(el("strong","✦ 自上次已看的变化"),el("p",delta.kind==="added"?"新增任务":delta.fields.includes("status")?`${statusText[delta.before.status]||delta.before.status} → ${statusText[n.status]||n.status}`:"内容或关系有更新"),button("查看完整对比",()=>{$("change-details").open=true;$("change-review").scrollIntoView({behavior:"instant",block:"start"});}));detail.append(note);}
   const dl = el("dl");
   fact(dl, "账本状态", statusText[n.status] || "未知", n.status === "blocked");
   fact(
@@ -722,11 +779,12 @@ async function showEvidence(id, ref) {
   );
 }
 const polling = new AutoRefresh(() => refresh.refresh());
-try { polling.enabled = localStorage.getItem("delivery-board.auto-refresh") !== "off"; } catch {}
+polling.enabled = false;
+try { polling.enabled = localStorage.getItem("delivery-board.auto-refresh.manual-default.v1") === "on"; } catch {}
 $("auto-refresh").checked = polling.enabled;
 $("auto-refresh").onchange = e => {
   polling.setEnabled(e.target.checked);
-  try { localStorage.setItem("delivery-board.auto-refresh", e.target.checked ? "on" : "off"); } catch {}
+  try { localStorage.setItem("delivery-board.auto-refresh.manual-default.v1", e.target.checked ? "on" : "off"); } catch {}
 };
 document.addEventListener("visibilitychange", () => polling.setVisible(!document.hidden));
 $("refresh").onclick = () => {

@@ -13,7 +13,7 @@ const browser=await chromium.launch({headless:true,executablePath:process.env.CH
 try {
  const p=await browser.newPage({viewport:{width:1440,height:1000}});p.setDefaultTimeout(12000);
  const errors=[];p.on('pageerror',e=>errors.push(e.message));
- await p.goto(server.url);await p.locator('#minimap svg').waitFor();
+ await p.goto(server.url);await p.locator("#auto-refresh").check();await p.locator('#minimap svg').waitFor();
  const initial=await p.evaluate(()=>fetch('/api/snapshot').then(r=>r.json()));
  await p.locator('#search').fill('SEARCH');await p.locator('#search').press('Enter');
  await p.getByRole('button',{name:'聚焦这条依赖链',exact:true}).click();

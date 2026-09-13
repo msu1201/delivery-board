@@ -150,6 +150,8 @@ export class GraphCanvas {
           },
         },
         { selector: "node[active], node[activeGroup]", style: { "background-color": "#eaf2ff", "border-color": "#2864ae", "border-width": 3, opacity: 1 } },
+        { selector: "node.unseen-change", style: { "underlay-color":"#55aab5", "underlay-opacity":0.24, "underlay-padding":10 } },
+        { selector: "edge.unseen-change", style: { "line-color":"#2295a2", "target-arrow-color":"#2295a2", "width":3.5 } },
         { selector: "node[active]:selected", style: { "border-color": "#24374b", "border-width": 5 } },
       ],
     });
